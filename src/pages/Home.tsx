@@ -1,19 +1,22 @@
-import { Dropdown } from "flowbite-react";
-import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { useState } from "react";
+import HomeLayout from "~/components/Home/Home.Layout";
+import PageLoading from "~/components/PageLoading";
 
 const Home = () => {
+    const [data, setData] = useState(null);
+
+    // return !data ? <PageLoading /> : <HomeLayout />;
     return (
-        <div className="h-screen w-screen flex flex-col justify-center items-center gap-3">
-            <div className="text-lg">Trịnh huyền thị nguyễn triệu trần</div>
-            <Dropdown label="Dropdown button">
-                <Dropdown.Item>
-                    <Link to={"/admin"}>Admin</Link>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                    <Link to={"/about"}>About</Link>
-                </Dropdown.Item>
-            </Dropdown>
-        </div>
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            exit={{ opacity: 0, transition: { duration: 0.75 } }}
+            variants={{ visible: { transition: { staggerChildren: 0.3 } } }}
+        >
+            <HomeLayout />
+        </motion.div>
     );
 };
 

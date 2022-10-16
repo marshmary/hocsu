@@ -1,0 +1,36 @@
+.left {
+    height: 50vh;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.left-content::-webkit-scrollbar {
+    display: none !important;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.left-content::-webkit-scrollbar {
+    -ms-overflow-style: none !important; /* IE and Edge */
+    scrollbar-width: none !important; /* Firefox */
+}
+
+@media screen and (min-width: 1024px) {
+    .left {
+        height: 100vh;
+    }
+
+    .vertical-line {
+        border-left: 1px solid var(--color-brown-light);
+        height: 6rem;
+        position: absolute;
+        left: 50%;
+        margin-left: -0.5px;
+    }
+
+    .vertical-line__top {
+        top: 0;
+    }
+
+    .vertical-line__bottom {
+        bottom: 0;
+    }
+}

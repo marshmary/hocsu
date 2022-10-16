@@ -1,7 +1,7 @@
 import { Tooltip } from "flowbite-react";
 import { motion } from "framer-motion";
 import { FunctionComponent, useState } from "react";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import Icon from "~/components/Icon";
 
@@ -14,20 +14,14 @@ const Fab: FunctionComponent<FabProps> = () => {
     };
 
     const navigate = useNavigate();
-    const actions: FloatingButtonAction[] = [
+    const location = useLocation();
+    var actions: FloatingButtonAction[] = [
         {
             label: "Login",
             icon: "user",
             onClick: () => {
                 // handle Google login
                 toast.info("Info Notification !");
-            },
-        },
-        {
-            label: "Admin",
-            icon: "folder",
-            onClick: () => {
-                navigate("/admin");
             },
         },
         {
@@ -38,6 +32,26 @@ const Fab: FunctionComponent<FabProps> = () => {
             },
         },
     ];
+
+    actions = !location.pathname.startsWith("/admin")
+        ? actions.concat([
+              {
+                  label: "Admin",
+                  icon: "folder",
+                  onClick: () => {
+                      navigate("/admin");
+                  },
+              },
+          ])
+        : actions.concat([
+              {
+                  label: "Home",
+                  icon: "home",
+                  onClick: () => {
+                      navigate("/");
+                  },
+              },
+          ]);
 
     return (
         <ul

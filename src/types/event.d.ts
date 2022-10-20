@@ -4,4 +4,7 @@ interface HistoryEvent {
     place: string;
     time: string;
     content: string;
+    timeline: TimeLine;
 }
+
+type TimeLine = string;

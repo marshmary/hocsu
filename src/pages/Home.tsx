@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import HomeLayout from "~/components/Home/Home.Layout";
-import PageLoading from "~/components/PageLoading";
 
 const Home = () => {
     const [data, setData] = useState(null);

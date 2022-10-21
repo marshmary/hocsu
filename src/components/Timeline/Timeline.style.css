@@ -1,0 +1,15 @@
+.home-timeline {
+    left: -10rem;
+
+    transition: 1s;
+}
+
+.home-timeline.show {
+    left: 0;
+}
+
+@media screen and (min-width: 1024px) {
+    .home-timeline {
+        left: 0;
+    }
+}

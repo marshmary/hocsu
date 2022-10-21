@@ -1,46 +1,52 @@
 import { Button, TextInput } from "flowbite-react";
 import { FunctionComponent, useState } from "react";
 
-interface EventFilterProps {}
+interface EventFilterProps {
+    filter: AdminPageFilter;
+    setFilter: React.Dispatch<React.SetStateAction<AdminPageFilter>>;
+}
 
 const initFilter = {
-    name: "",
+    title: "",
     from: "",
     to: "",
 };
 
-const EventFilter: FunctionComponent<EventFilterProps> = () => {
-    const [filter, setFilter] = useState(initFilter);
-
+const EventFilter: FunctionComponent<EventFilterProps> = ({
+    filter,
+    setFilter,
+}) => {
+    const [localFilter, setLocalFilter] = useState(initFilter);
     const handleReset = () => {
-        setFilter(initFilter);
+        setLocalFilter({ ...initFilter });
+        setFilter({ ...filter, ...initFilter });
     };
 
     const handleApply = () => {
         if (
-            filter.name === initFilter.name &&
-            filter.from == initFilter.from &&
-            filter.to == initFilter.to
+            localFilter.title === initFilter.title &&
+            localFilter.from == initFilter.from &&
+            localFilter.to == initFilter.to
         )
             return;
-        console.log(
-            "🚀 ~ file: Admin.EventFilter.tsx ~ line 14 ~ filter",
-            filter
-        );
+        setFilter({ ...filter, ...localFilter });
     };
 
     return (
         <div className="w-full h-auto flex gap-10 flex-wrap">
             <div>
-                <div className="mb-2 font-medium">Name:</div>
+                <div className="mb-2 font-medium">Title:</div>
                 <TextInput
                     id="event"
                     type="text"
                     placeholder="Enter an event name"
                     required={true}
-                    value={filter.name}
+                    value={localFilter.title}
                     onChange={(e) => {
-                        setFilter({ ...filter, name: e.target.value });
+                        setLocalFilter({
+                            ...localFilter,
+                            title: e.target.value,
+                        });
                     }}
                 />
             </div>
@@ -49,9 +55,12 @@ const EventFilter: FunctionComponent<EventFilterProps> = () => {
                 <TextInput
                     type="date"
                     required={true}
-                    value={filter.from}
+                    value={localFilter.from}
                     onChange={(e) => {
-                        setFilter({ ...filter, from: e.target.value });
+                        setLocalFilter({
+                            ...localFilter,
+                            from: e.target.value,
+                        });
                     }}
                 />
             </div>
@@ -60,9 +69,9 @@ const EventFilter: FunctionComponent<EventFilterProps> = () => {
                 <TextInput
                     type="date"
                     required={true}
-                    value={filter.to}
+                    value={localFilter.to}
                     onChange={(e) => {
-                        setFilter({ ...filter, to: e.target.value });
+                        setLocalFilter({ ...localFilter, to: e.target.value });
                     }}
                 />
             </div>

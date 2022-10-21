@@ -1,56 +1,46 @@
-import { Button, Pagination, Textarea, TextInput } from "flowbite-react";
-import { useState } from "react";
+import { Button, Pagination } from "flowbite-react";
+import { useEffect, useState } from "react";
 import Table from "~/components/Table";
 import EventFilter from "~/components/Admin/Admin.EventFilter";
-import Modal from "~/components/Modal/Modal";
 import { useModal } from "~/components/Modal";
 import ModalCreate from "./Admin.ModalCreate";
 import ModalDelete from "./Admin.ModalDelete";
+import { getHistoryEvents } from "~/data/events";
+import Loading from "../Loading";
 
 const AdminLayout = () => {
     const { open: modalCreate, setOpen: setModalCreate } = useModal();
     const { open: modalDelete, setOpen: setModalDelete } = useModal();
 
-    const heads = ["Name", "Time", "Content"];
-    const rows: TableRowData[] = [
-        {
-            id: "1",
-            name: <p>Khởi nghĩa Phùng Hưng</p>,
-            time: <p className="whitespace-nowrap">766-791</p>,
-            content: (
-                <p className="truncate sm:whitespace-normal w-72 sm:w-auto">
-                    Khởi nghĩa diễn ra nhằm chống lại chính sách cai trị hà khắc
-                    của nhà Đường, cuộc khởi nghĩa đã chiếm được phủ Tống Bình,
-                    giành quyền tự chủ trong vài năm.
-                </p>
-            ),
-        },
-        {
-            id: "2",
-            name: "Khởi nghĩa Mai Thúc Loan",
-            time: <p className="whitespace-nowrap">713-722</p>,
-            content: (
-                <p className="truncate sm:whitespace-normal w-72 sm:w-auto">
-                    Dưới ách thống trị tàn bạo của nhà Đường, từ Hoan Châu khởi
-                    nghĩa lan rộng khắp nơi, Mai Thúc Loan cho xây thành Vạn An
-                    (Nam Đàn-Nghệ An), đánh chiếm phủ Tống Bình. Cuộc khởi nghĩa
-                    đã giành và giữ chính quyền độc lập gần 10 năm.
-                </p>
-            ),
-        },
-        {
-            id: "3",
-            name: <p>Khởi nghĩa Phùng Hưng</p>,
-            time: <p className="whitespace-nowrap">766-791</p>,
-            content: (
-                <p className="truncate sm:whitespace-normal w-72 sm:w-auto">
-                    Khởi nghĩa diễn ra nhằm chống lại chính sách cai trị hà khắc
-                    của nhà Đường, cuộc khởi nghĩa đã chiếm được phủ Tống Bình,
-                    giành quyền tự chủ trong vài năm.
-                </p>
-            ),
-        },
-    ];
+    const [rowsData, setRowsData] = useState<TableRowData[]>(null!);
+    const [totalPages, setTotalPages] = useState<number>(0);
+    const [filter, setFilter] = useState<AdminPageFilter>({
+        limit: 2,
+        page: 1,
+    });
+    useEffect(() => {
+        getHistoryEvents(filter)
+            .then((result) => {
+                setRowsData(
+                    result.events.map((event) => ({
+                        id: event.id,
+                        name: <p>{event.title}</p>,
+                        time: <p className="whitespace-nowrap">{event.time}</p>,
+                        content: (
+                            <p className="truncate sm:whitespace-normal w-72 sm:w-auto">
+                                {event.content}
+                            </p>
+                        ),
+                    }))
+                );
+                setTotalPages(result.totalPages);
+            })
+            .catch(() => {
+                setRowsData([]);
+            });
+    }, [filter]);
+
+    const heads = ["Title", "Time", "Content"];
     const rowOptions = (
         <span className="flex gap-3">
             <p className="font-medium text-blue-600 hover:underline dark:text-blue-500 cursor-pointer">
@@ -70,6 +60,7 @@ const AdminLayout = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
+        setFilter({ ...filter, page: page });
     };
 
     return (
@@ -86,23 +77,35 @@ const AdminLayout = () => {
                 </Button>
             </div>
             <div className="p-3">
-                <EventFilter />
+                <EventFilter filter={filter} setFilter={setFilter} />
             </div>
             <div className="p-3">
-                <Table
-                    heads={heads}
-                    rows={rows}
-                    hasRowOptions
-                    rowOptions={rowOptions}
-                />
-                <div className="mt-2 w-full grid place-items-start">
-                    <Pagination
-                        currentPage={currentPage}
-                        onPageChange={handlePageChange}
-                        showIcons={true}
-                        totalPages={100}
-                    />
-                </div>
+                {!rowsData ? (
+                    <div className="w-full grid place-items-center">
+                        <Loading />
+                    </div>
+                ) : rowsData && rowsData.length === 0 ? (
+                    <div className="w-full grid place-items-center">
+                        No item found
+                    </div>
+                ) : (
+                    <>
+                        <Table
+                            heads={heads}
+                            rows={rowsData}
+                            hasRowOptions
+                            rowOptions={rowOptions}
+                        />
+                        <div className="mt-2 w-full grid place-items-start">
+                            <Pagination
+                                currentPage={currentPage}
+                                onPageChange={handlePageChange}
+                                showIcons={true}
+                                totalPages={totalPages}
+                            />
+                        </div>
+                    </>
+                )}
             </div>
 
             <ModalCreate open={modalCreate} setOpen={setModalCreate} />

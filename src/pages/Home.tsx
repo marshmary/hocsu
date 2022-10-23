@@ -1,11 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HomeLayout from "~/components/Home/Home.Layout";
 import PageLoadAnimation from "~/components/Loading/PageLoadAnimation";
+import { listTimelines } from "~/data/timelines";
 
 const Home = () => {
-    const [data, setData] = useState(null);
-
-    // return !data ? <PageLoading /> : <HomeLayout />;
     return (
         <PageLoadAnimation>
             <HomeLayout />

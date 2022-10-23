@@ -9,7 +9,6 @@ import {
     Timestamp,
     doc,
     deleteDoc,
-    FieldPath,
     getDoc,
 } from "firebase/firestore";
 import {
@@ -157,4 +156,15 @@ export const deleteEvent = async (id: string) => {
     }
 
     await deleteDoc(docRef);
+};
+
+export const listEventsByTimeline = async (timeline: string) => {
+    const q = query(collectionRef, where("timeline", "==", timeline));
+
+    const querySnapshot = await getDocs(q);
+
+    return querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+    })) as HistoryEvent[];
 };

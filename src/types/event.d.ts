@@ -5,7 +5,7 @@ interface HistoryEvent {
     time: string;
     content: string;
     timeline: TimeLine;
-    images: string[];
+    images: Image[];
 }
 
 type TimeLine = string;
@@ -36,5 +36,10 @@ interface HistoryEventCreate {
     time: string;
     content: string;
     timeline: TimeLine;
-    images: string[];
+    images: Image[];
+}
+
+interface Image {
+    url: string;
+    key: string;
 }

@@ -11,6 +11,7 @@ import Loading from "../Loading";
 const AdminLayout = () => {
     const { open: modalCreate, setOpen: setModalCreate } = useModal();
     const { open: modalDelete, setOpen: setModalDelete } = useModal();
+    const [selectedEvent, setSelectedEvent] = useState<HistoryEvent>();
 
     const [rowsData, setRowsData] = useState<TableRowData[]>(null!);
     const [totalPages, setTotalPages] = useState<number>(0);
@@ -32,6 +33,22 @@ const AdminLayout = () => {
                                 {event.content}
                             </p>
                         ),
+                        options: (
+                            <span className="flex gap-3">
+                                <p className="font-medium text-blue-600 hover:underline dark:text-blue-500 cursor-pointer">
+                                    Edit
+                                </p>
+                                <p
+                                    className="font-medium text-red-600 hover:underline dark:text-red-500 cursor-pointer"
+                                    onClick={() => {
+                                        setModalDelete(true);
+                                        setSelectedEvent(event);
+                                    }}
+                                >
+                                    Delete
+                                </p>
+                            </span>
+                        ),
                     }))
                 );
                 setTotalPages(result.totalPages);
@@ -45,22 +62,7 @@ const AdminLayout = () => {
         fetchData();
     }, [filter]);
 
-    const heads = ["Title", "Time", "Content"];
-    const rowOptions = (
-        <span className="flex gap-3">
-            <p className="font-medium text-blue-600 hover:underline dark:text-blue-500 cursor-pointer">
-                Edit
-            </p>
-            <p
-                className="font-medium text-red-600 hover:underline dark:text-red-500 cursor-pointer"
-                onClick={() => {
-                    setModalDelete(true);
-                }}
-            >
-                Delete
-            </p>
-        </span>
-    );
+    const heads = ["Title", "Time", "Content", ""];
 
     const [currentPage, setCurrentPage] = useState(1);
     const handlePageChange = (page: number) => {
@@ -98,8 +100,7 @@ const AdminLayout = () => {
                         <Table
                             heads={heads}
                             rows={rowsData}
-                            hasRowOptions
-                            rowOptions={rowOptions}
+                            hasRowOptions={false}
                         />
                         <div className="mt-2 w-full grid place-items-start">
                             <Pagination
@@ -118,7 +119,12 @@ const AdminLayout = () => {
                 setOpen={setModalCreate}
                 successCallback={fetchData}
             />
-            <ModalDelete open={modalDelete} setOpen={setModalDelete} />
+            <ModalDelete
+                open={modalDelete}
+                setOpen={setModalDelete}
+                selected={selectedEvent}
+                successCallback={fetchData}
+            />
         </div>
     );
 };

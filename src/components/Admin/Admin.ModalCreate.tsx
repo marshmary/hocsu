@@ -9,8 +9,6 @@ import SelectAsyncCreatable from "../Select/SelectAsyncCreatable";
 import { recommendTimelines } from "~/data/timelines";
 import { createEvent } from "~/data/events";
 import { toast } from "react-toastify";
-import { isDate } from "util";
-import moment from "moment";
 import Icon from "../Icon";
 
 interface ModalCreateProps {
@@ -69,7 +67,7 @@ const ModalCreate: FunctionComponent<ModalCreateProps> = ({
             setLoading(true);
             var rs = await createEvent({
                 title: values.title,
-                content: values.title,
+                content: values.content,
                 images: values.imageFiles,
                 from: values.from,
                 to: values.to,

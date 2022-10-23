@@ -7,15 +7,27 @@ import {
     orderBy,
     where,
     Timestamp,
+    doc,
+    deleteDoc,
+    FieldPath,
+    getDoc,
 } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import {
+    ref,
+    uploadBytes,
+    getDownloadURL,
+    getStorage,
+    deleteObject,
+} from "firebase/storage";
 import normalizeText from "normalize-text";
+import { toast } from "react-toastify";
 import uuid from "react-uuid";
 import { db, storage } from "~/utils/firebase/firebase-config";
 import { createTimeline, getTimeline } from "./timelines";
 
 // Get collection
-const collectionRef = collection(db, "events");
+const collectionName = "events";
+const collectionRef = collection(db, collectionName);
 
 const emptyFilterResult: AdminFilterResult = {
     totalPages: 0,
@@ -78,20 +90,21 @@ export const getHistoryEvents: (
 
 export const createEvent = async (historyEvent: HistoryEventCreateForm) => {
     // Upload image
-    var imageUrls = [];
+    var imageUrls: Image[] = [];
     if (historyEvent.images) {
         for (const image of historyEvent.images) {
-            const imgRef = ref(
-                storage,
-                `${uuid()}.${image.name.substring(
-                    image.name.lastIndexOf(".") + 1,
-                    image.name.length
-                )}`
-            );
+            const key = `${uuid()}.${image.name.substring(
+                image.name.lastIndexOf(".") + 1,
+                image.name.length
+            )}`;
+            const imgRef = ref(storage, key);
             try {
                 const snapshot = await uploadBytes(imgRef, image);
                 const uploadUrl = await getDownloadURL(snapshot.ref);
-                imageUrls.push(uploadUrl);
+                imageUrls.push({
+                    url: uploadUrl,
+                    key: key,
+                });
             } catch {}
         }
     }
@@ -114,4 +127,34 @@ export const createEvent = async (historyEvent: HistoryEventCreateForm) => {
     const res = await addDoc(collectionRef, historyEventUpload);
 
     return res;
+};
+
+export const deleteEvent = async (id: string) => {
+    const docRef = doc(db, collectionName, id);
+    const snapshot = await getDoc(docRef);
+    if (!snapshot.exists()) {
+        toast.warning("Event not found!");
+        return;
+    }
+
+    var event = snapshot.data() as HistoryEvent;
+
+    if (event.images) {
+        for (const image of event.images) {
+            const storage = getStorage();
+            const desertRef = ref(storage, image.key);
+
+            // Delete the file
+            deleteObject(desertRef)
+                .then(() => {})
+                .catch((error) => {
+                    console.log(
+                        "🚀 ~ file: events.ts ~ line 145 ~ deleteEvent ~ error",
+                        error
+                    );
+                });
+        }
+    }
+
+    await deleteDoc(docRef);
 };

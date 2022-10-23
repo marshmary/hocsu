@@ -18,7 +18,8 @@ const AdminLayout = () => {
         limit: 2,
         page: 1,
     });
-    useEffect(() => {
+
+    const fetchData = () => {
         getHistoryEvents(filter)
             .then((result) => {
                 setRowsData(
@@ -38,6 +39,10 @@ const AdminLayout = () => {
             .catch(() => {
                 setRowsData([]);
             });
+    };
+
+    useEffect(() => {
+        fetchData();
     }, [filter]);
 
     const heads = ["Title", "Time", "Content"];
@@ -108,7 +113,11 @@ const AdminLayout = () => {
                 )}
             </div>
 
-            <ModalCreate open={modalCreate} setOpen={setModalCreate} />
+            <ModalCreate
+                open={modalCreate}
+                setOpen={setModalCreate}
+                successCallback={fetchData}
+            />
             <ModalDelete open={modalDelete} setOpen={setModalDelete} />
         </div>
     );

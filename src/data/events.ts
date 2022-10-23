@@ -2,19 +2,17 @@ import {
     collection,
     getDocs,
     addDoc,
-    doc,
-    deleteDoc,
     query,
     limit,
-    startAt,
     orderBy,
-    startAfter,
     where,
     Timestamp,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import normalizeText from "normalize-text";
+import uuid from "react-uuid";
 import { db, storage } from "~/utils/firebase/firebase-config";
+import { createTimeline, getTimeline } from "./timelines";
 
 // Get collection
 const collectionRef = collection(db, "events");
@@ -76,4 +74,44 @@ export const getHistoryEvents: (
         totalPages: totalPages,
         events: events,
     };
+};
+
+export const createEvent = async (historyEvent: HistoryEventCreateForm) => {
+    // Upload image
+    var imageUrls = [];
+    if (historyEvent.images) {
+        for (const image of historyEvent.images) {
+            const imgRef = ref(
+                storage,
+                `${uuid()}.${image.name.substring(
+                    image.name.lastIndexOf(".") + 1,
+                    image.name.length
+                )}`
+            );
+            try {
+                const snapshot = await uploadBytes(imgRef, image);
+                const uploadUrl = await getDownloadURL(snapshot.ref);
+                imageUrls.push(uploadUrl);
+            } catch {}
+        }
+    }
+
+    const historyEventUpload: HistoryEventCreate = {
+        content: historyEvent.content,
+        from: Timestamp.fromDate(new Date(historyEvent.from)),
+        images: imageUrls,
+        time: `${historyEvent.from} - ${historyEvent.to}`,
+        timeline: historyEvent.timeline,
+        title: historyEvent.title,
+    };
+
+    var existedTimeline = await getTimeline(historyEvent.timeline);
+    if (!existedTimeline) {
+        createTimeline(historyEvent.timeline);
+    }
+
+    // New document
+    const res = await addDoc(collectionRef, historyEventUpload);
+
+    return res;
 };

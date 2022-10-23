@@ -16,7 +16,7 @@ const ModalDelete: FunctionComponent<ModalDeleteProps> = ({
             setOpen={setOpen}
             header="Delete an event"
             body={
-                <div>
+                <div className="px-5">
                     Are you sure you want to delete this event? Data will be
                     permanently removed. This action cannot be undone.
                 </div>

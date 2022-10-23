@@ -3,7 +3,7 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "~/utils/firebase/firebase-config";
 
 // Firestore
-import { collection, doc, getDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "~/utils/firebase/firebase-config";
 
 export const getCurrentAuth = () => {

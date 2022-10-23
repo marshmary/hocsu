@@ -63,3 +63,10 @@ export const createTimeline = async (value: string) => {
 
     return res;
 };
+
+export const listTimelines: () => Promise<TimeLine[]> = async () => {
+    const data = await getDocs(collectionRef);
+
+    // Re-format data
+    return data.docs.map((doc) => doc.data().title) as TimeLine[];
+};

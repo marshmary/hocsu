@@ -6,7 +6,8 @@ import { useModal } from "~/components/Modal";
 import ModalCreate from "./Admin.ModalCreate";
 import ModalDelete from "./Admin.ModalDelete";
 import { getHistoryEvents } from "~/data/events";
-import Loading from "../Loading";
+import Loading from "../Loading/Loading";
+import Fab from "../Fab";
 
 const AdminLayout = () => {
     const { open: modalCreate, setOpen: setModalCreate } = useModal();
@@ -71,61 +72,64 @@ const AdminLayout = () => {
     };
 
     return (
-        <div className="bg-[#F0F0F5] w-screen min-h-screen">
-            <div className="flex justify-between p-3">
-                <div className="text-lg font-bold">Event list</div>
-                <Button
-                    color="success"
-                    onClick={() => {
-                        setModalCreate(true);
-                    }}
-                >
-                    Add new
-                </Button>
-            </div>
-            <div className="p-3">
-                <EventFilter filter={filter} setFilter={setFilter} />
-            </div>
-            <div className="p-3">
-                {!rowsData ? (
-                    <div className="w-full grid place-items-center">
-                        <Loading />
-                    </div>
-                ) : rowsData && rowsData.length === 0 ? (
-                    <div className="w-full grid place-items-center">
-                        No item found
-                    </div>
-                ) : (
-                    <>
-                        <Table
-                            heads={heads}
-                            rows={rowsData}
-                            hasRowOptions={false}
-                        />
-                        <div className="mt-2 w-full grid place-items-start">
-                            <Pagination
-                                currentPage={currentPage}
-                                onPageChange={handlePageChange}
-                                showIcons={true}
-                                totalPages={totalPages}
-                            />
+        <>
+            <div className="bg-[#F0F0F5] w-screen min-h-screen">
+                <div className="flex justify-between p-3">
+                    <div className="text-lg font-bold">Event list</div>
+                    <Button
+                        color="success"
+                        onClick={() => {
+                            setModalCreate(true);
+                        }}
+                    >
+                        Add new
+                    </Button>
+                </div>
+                <div className="p-3">
+                    <EventFilter filter={filter} setFilter={setFilter} />
+                </div>
+                <div className="p-3">
+                    {!rowsData ? (
+                        <div className="w-full grid place-items-center">
+                            <Loading />
                         </div>
-                    </>
-                )}
-            </div>
+                    ) : rowsData && rowsData.length === 0 ? (
+                        <div className="w-full grid place-items-center">
+                            No item found
+                        </div>
+                    ) : (
+                        <>
+                            <Table
+                                heads={heads}
+                                rows={rowsData}
+                                hasRowOptions={false}
+                            />
+                            <div className="mt-2 w-full grid place-items-start">
+                                <Pagination
+                                    currentPage={currentPage}
+                                    onPageChange={handlePageChange}
+                                    showIcons={true}
+                                    totalPages={totalPages}
+                                />
+                            </div>
+                        </>
+                    )}
+                </div>
 
-            <ModalCreate
-                open={modalCreate}
-                setOpen={setModalCreate}
-                successCallback={fetchData}
-            />
-            <ModalDelete
-                open={modalDelete}
-                setOpen={setModalDelete}
-                selected={selectedEvent}
-                successCallback={fetchData}
-            />
-        </div>
+                <ModalCreate
+                    open={modalCreate}
+                    setOpen={setModalCreate}
+                    successCallback={fetchData}
+                />
+                <ModalDelete
+                    open={modalDelete}
+                    setOpen={setModalDelete}
+                    selected={selectedEvent}
+                    successCallback={fetchData}
+                />
+            </div>
+            <Fab />
+        </>
     );
 };
 

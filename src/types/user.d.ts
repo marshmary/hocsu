@@ -1,0 +1,3 @@
+interface Admin {
+    id: string;
+}

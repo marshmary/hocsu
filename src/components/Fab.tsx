@@ -2,8 +2,8 @@ import { Tooltip } from "flowbite-react";
 import { motion } from "framer-motion";
 import { FunctionComponent, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { toast } from "react-toastify";
 import Icon from "~/components/Icon";
+import { handleLogout } from "~/utils/logout";
 
 interface FabProps {}
 
@@ -17,18 +17,11 @@ const Fab: FunctionComponent<FabProps> = () => {
     const location = useLocation();
     var actions: FloatingButtonAction[] = [
         {
-            label: "Login",
-            icon: "user",
+            label: "Logout",
+            icon: "right-from-bracket",
             onClick: () => {
-                // handle Google login
-                toast.info("Info Notification !");
-            },
-        },
-        {
-            label: "About",
-            icon: "circle-info",
-            onClick: () => {
-                navigate("/about");
+                // handle Logout
+                handleLogout();
             },
         },
     ];

@@ -68,5 +68,7 @@ export const listTimelines: () => Promise<TimeLine[]> = async () => {
     const data = await getDocs(collectionRef);
 
     // Re-format data
-    return data.docs.map((doc) => doc.data().title) as TimeLine[];
+    return data.docs
+        .map((doc) => doc.data().title)
+        .sort((a, b) => Number.parseInt(a) - Number.parseInt(b)) as TimeLine[];
 };

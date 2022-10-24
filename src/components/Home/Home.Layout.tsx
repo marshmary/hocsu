@@ -5,28 +5,16 @@ import { useOutsideClick } from "~/utils/use-outside-click";
 import { useHorizontalSwipe } from "~/utils/use-swipe";
 
 import Timeline from "../Timeline/Timeline";
+import TimeLineSearch from "../Timeline/Timeline.Search";
 import HomeLeftContent from "./Home.LeftContent";
 import HomeRightContent from "./Home.RightContent";
 
 const HomeLayout = () => {
+    // Control render logic
     const { isTimelineShowing, swipeProps, timelineRef } = useHomeRenderLogic();
-
-    const [timelineData, setTimelineData] = useState<string[]>([]);
-    const [selectedTime, setSelectedTime] = useState<string | null>(null);
-    const [events, setEvents] = useState<HistoryEvent[]>([]);
-
-    useEffect(() => {
-        listTimelines().then((res) => {
-            setTimelineData(res);
-            setSelectedTime(res[0]);
-        });
-    }, []);
-
-    useEffect(() => {
-        if (selectedTime) {
-            listEventsByTimeline(selectedTime).then((res) => setEvents(res));
-        }
-    }, [selectedTime]);
+    // Control data logic
+    const { events, timelineData, selectedTime, setSelectedTime } =
+        useHomeDataLogic();
 
     return (
         <>
@@ -39,6 +27,10 @@ const HomeLayout = () => {
                     timelineRef={timelineRef}
                     timelineData={timelineData}
                     selectedTime={selectedTime}
+                    setSelectedTime={setSelectedTime}
+                />
+                <TimeLineSearch
+                    timelineData={timelineData}
                     setSelectedTime={setSelectedTime}
                 />
                 <HomeLeftContent
@@ -76,5 +68,33 @@ function useHomeRenderLogic() {
         isTimelineShowing,
         swipeProps,
         timelineRef,
+    };
+}
+
+function useHomeDataLogic() {
+    const [timelineData, setTimelineData] = useState<string[]>([]);
+    const [selectedTime, setSelectedTime] = useState<string | null>(null);
+    const [events, setEvents] = useState<HistoryEvent[]>([]);
+
+    // First render => fetch timelines data
+    useEffect(() => {
+        listTimelines().then((res) => {
+            setTimelineData(res);
+            setSelectedTime(res[0]);
+        });
+    }, []);
+
+    // When selected timeline => fetch events data
+    useEffect(() => {
+        if (selectedTime) {
+            listEventsByTimeline(selectedTime).then((res) => setEvents(res));
+        }
+    }, [selectedTime]);
+
+    return {
+        events,
+        timelineData,
+        selectedTime,
+        setSelectedTime,
     };
 }

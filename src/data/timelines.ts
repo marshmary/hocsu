@@ -6,11 +6,14 @@ import {
     limit,
     orderBy,
     where,
+    doc,
+    deleteDoc,
 } from "firebase/firestore";
 import { db } from "~/utils/firebase/firebase-config";
 
 // Get collection
-const collectionRef = collection(db, "timelines");
+const collectionName = "timelines";
+const collectionRef = collection(db, collectionName);
 
 export const recommendTimelines: (
     keyword: string
@@ -71,4 +74,22 @@ export const listTimelines: () => Promise<TimeLine[]> = async () => {
     return data.docs
         .map((doc) => doc.data().title)
         .sort((a, b) => Number.parseInt(a) - Number.parseInt(b)) as TimeLine[];
+};
+
+export const deleteTimeline = async (value: string) => {
+    var q = query(collectionRef, where("title", "==", value));
+    const snapshot = await getDocs(q);
+    if (snapshot.empty) {
+        return null;
+    }
+
+    var timeline = (
+        snapshot.docs.map((doc) => ({
+            ...doc.data(),
+            id: doc.id,
+        })) as DbTimeline[]
+    )[0];
+
+    const docRef = doc(db, collectionName, timeline.id);
+    await deleteDoc(docRef);
 };

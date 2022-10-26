@@ -32,8 +32,9 @@ yup.addMethod<yup.StringSchema>(yup.string, "dateFormat", function (message) {
     return this.test(`test-date-format`, message, function (value) {
         const { path, createError } = this;
 
-        if (value && value.length < 4) {
-            value = `${"0".repeat(4 - value.length)}${value}`;
+        if (value) {
+            const year = value.split("-")[0];
+            value = `${"0".repeat(4 - year.length)}${value}`;
         }
 
         return (

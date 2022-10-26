@@ -25,7 +25,7 @@ interface HistoryEventCreateForm {
     from: string;
     to: string;
     content: string;
-    timeline: TimeLine;
+    // timeline: TimeLine;
     images: File[];
 }
 

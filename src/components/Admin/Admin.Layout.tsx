@@ -8,16 +8,18 @@ import ModalDelete from "./Admin.ModalDelete";
 import { getHistoryEvents } from "~/data/events";
 import Loading from "../Loading/Loading";
 import Fab from "../Fab";
+import ModalEdit from "./Admin.ModalEdit";
 
 const AdminLayout = () => {
     const { open: modalCreate, setOpen: setModalCreate } = useModal();
     const { open: modalDelete, setOpen: setModalDelete } = useModal();
-    const [selectedEvent, setSelectedEvent] = useState<HistoryEvent>();
+    const { open: modalEdit, setOpen: setModalEdit } = useModal();
+    const [selectedEvent, setSelectedEvent] = useState<HistoryEvent>(null!);
 
     const [rowsData, setRowsData] = useState<TableRowData[]>(null!);
     const [totalPages, setTotalPages] = useState<number>(0);
     const [filter, setFilter] = useState<AdminPageFilter>({
-        limit: 2,
+        limit: 50,
         page: 1,
     });
 
@@ -36,7 +38,13 @@ const AdminLayout = () => {
                         ),
                         options: (
                             <span className="flex gap-3">
-                                <p className="font-medium text-blue-600 hover:underline dark:text-blue-500 cursor-pointer">
+                                <p
+                                    className="font-medium text-blue-600 hover:underline dark:text-blue-500 cursor-pointer"
+                                    onClick={() => {
+                                        setModalEdit(true);
+                                        setSelectedEvent(event);
+                                    }}
+                                >
                                     Edit
                                 </p>
                                 <p
@@ -104,14 +112,16 @@ const AdminLayout = () => {
                                 rows={rowsData}
                                 hasRowOptions={false}
                             />
-                            <div className="mt-2 w-full grid place-items-start">
-                                <Pagination
-                                    currentPage={currentPage}
-                                    onPageChange={handlePageChange}
-                                    showIcons={true}
-                                    totalPages={totalPages}
-                                />
-                            </div>
+                            {rowsData && totalPages > 1 && (
+                                <div className="mt-2 w-full grid place-items-start">
+                                    <Pagination
+                                        currentPage={currentPage}
+                                        onPageChange={handlePageChange}
+                                        showIcons={true}
+                                        totalPages={totalPages}
+                                    />
+                                </div>
+                            )}
                         </>
                     )}
                 </div>
@@ -124,6 +134,12 @@ const AdminLayout = () => {
                 <ModalDelete
                     open={modalDelete}
                     setOpen={setModalDelete}
+                    selected={selectedEvent}
+                    successCallback={fetchData}
+                />
+                <ModalEdit
+                    open={modalEdit}
+                    setOpen={setModalEdit}
                     selected={selectedEvent}
                     successCallback={fetchData}
                 />

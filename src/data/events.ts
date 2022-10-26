@@ -10,6 +10,7 @@ import {
     doc,
     deleteDoc,
     getDoc,
+    updateDoc,
 } from "firebase/firestore";
 import {
     ref,
@@ -96,15 +97,13 @@ export const createEvent = async (historyEvent: HistoryEventCreateForm) => {
                 image.name.lastIndexOf(".") + 1,
                 image.name.length
             )}`;
-            const imgRef = ref(storage, key);
-            try {
-                const snapshot = await uploadBytes(imgRef, image);
-                const uploadUrl = await getDownloadURL(snapshot.ref);
+            const uploadUrl = await uploadStorageObject(image, key);
+            if (uploadUrl) {
                 imageUrls.push({
                     url: uploadUrl,
                     key: key,
                 });
-            } catch {}
+            }
         }
     }
 
@@ -140,31 +139,12 @@ export const deleteEvent = async (id: string) => {
 
     if (event.images) {
         for (const image of event.images) {
-            const storage = getStorage();
-            const desertRef = ref(storage, image.key);
-
-            // Delete the file
-            deleteObject(desertRef)
-                .then(() => {})
-                .catch((error) => {
-                    console.log(
-                        "🚀 ~ file: events.ts ~ line 145 ~ deleteEvent ~ error",
-                        error
-                    );
-                });
+            await deleteStorageObject(image);
         }
     }
 
     // Timeline is duplicated in event collection & timeline colelction
     var eventsInTimeline = await listEventsByTimeline(event.timeline);
-    console.log(
-        "🚀 ~ file: events.ts ~ line 160 ~ deleteEvent ~ event.timeline",
-        event.timeline
-    );
-    console.log(
-        "🚀 ~ file: events.ts ~ line 160 ~ deleteEvent ~ eventsInTimeline",
-        eventsInTimeline
-    );
     if (eventsInTimeline && eventsInTimeline.length === 1) {
         await deleteTimeline(event.timeline);
     }
@@ -181,4 +161,102 @@ export const listEventsByTimeline = async (timeline: string) => {
         ...doc.data(),
         id: doc.id,
     })) as HistoryEvent[];
+};
+
+export const getEventById = async (id: string) => {
+    const docRef = doc(db, collectionName, id);
+    const snapshot = await getDoc(docRef);
+    if (!snapshot.exists()) {
+        return null;
+    }
+
+    var event = snapshot.data() as HistoryEvent;
+    return event;
+};
+
+export const updateEvent = async (historyEvent: HistoryEventEditForm) => {
+    // Upload new images
+    var imageUrls: Image[] = [];
+    if (historyEvent.imageFiles) {
+        for (const image of historyEvent.imageFiles) {
+            const key = `${uuid()}.${image.name.substring(
+                image.name.lastIndexOf(".") + 1,
+                image.name.length
+            )}`;
+            const uploadUrl = await uploadStorageObject(image, key);
+            if (uploadUrl) {
+                imageUrls.push({
+                    url: uploadUrl,
+                    key: key,
+                });
+            }
+        }
+    }
+
+    // Remove deleted images
+    const existedEvent = await getEventById(historyEvent.id);
+    if (existedEvent && existedEvent.images.length > 0) {
+        var removed: Image[] = [];
+        for (const img of existedEvent?.images!) {
+            if (
+                existedEvent?.images.some((x) => x.key === img.key) &&
+                !historyEvent.images.some((x: Image) => x.key === img.key)
+            ) {
+                removed.push(img);
+            }
+        }
+
+        for (const img of removed) {
+            await deleteStorageObject(img);
+        }
+    }
+
+    // Update doc
+    const docRef = doc(db, collectionName, historyEvent.id);
+    const timeline = new Date(historyEvent.from).getFullYear().toString();
+
+    // Add new timeline & remove old timeline if any
+    var existedTimeline = await getTimeline(timeline);
+    if (!existedTimeline) {
+        await createTimeline(timeline);
+
+        // Timeline is duplicated in event collection & timeline colelction
+        var eventsInTimeline = await listEventsByTimeline(
+            existedEvent?.timeline!
+        );
+        if (eventsInTimeline && eventsInTimeline.length < 2) {
+            await deleteTimeline(existedEvent?.timeline!);
+        }
+    }
+
+    await updateDoc(docRef, {
+        content: historyEvent.content,
+        from: Timestamp.fromDate(new Date(historyEvent.from)),
+        images: [...historyEvent.images, ...imageUrls],
+        time: `${historyEvent.from} - ${historyEvent.to}`,
+        timeline: timeline,
+        title: historyEvent.title,
+    });
+};
+
+const uploadStorageObject: (
+    image: File,
+    name: string
+) => Promise<string | null> = async (image: File, name: string) => {
+    const imgRef = ref(storage, name);
+    try {
+        const snapshot = await uploadBytes(imgRef, image);
+        const uploadUrl = await getDownloadURL(snapshot.ref);
+        return uploadUrl;
+    } catch {
+        return null;
+    }
+};
+
+const deleteStorageObject = async (img: Image) => {
+    const storage = getStorage();
+    const desertRef = ref(storage, img.key);
+
+    // Delete the file
+    await deleteObject(desertRef);
 };

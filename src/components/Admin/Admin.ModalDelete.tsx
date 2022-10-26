@@ -37,8 +37,14 @@ const ModalDelete: FunctionComponent<ModalDeleteProps> = ({
             header="Delete an event"
             body={
                 <div className="px-5">
-                    Are you sure you want to delete this event? Data will be
-                    permanently removed. This action cannot be undone.
+                    Are you sure you want to delete "
+                    {selected && selected.title ? (
+                        <span className="font-semibold">{selected.title}</span>
+                    ) : (
+                        this
+                    )}
+                    " event? Data will be permanently removed. This action
+                    cannot be undone.
                 </div>
             }
             handleAccept={handleAccept}

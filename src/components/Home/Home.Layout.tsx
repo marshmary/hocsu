@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { listEventsByTimeline } from "~/data/events";
 import { listTimelines } from "~/data/timelines";
+import { SWIPE_LENGTH } from "~/utils/constants";
 import { useOutsideClick } from "~/utils/use-outside-click";
 import { useHorizontalSwipe } from "~/utils/use-swipe";
 
@@ -11,7 +12,8 @@ import HomeRightContent from "./Home.RightContent";
 
 const HomeLayout = () => {
     // Control render logic
-    const { isTimelineShowing, swipeProps, timelineRef } = useHomeRenderLogic();
+    const { isTimelineShowing, swipeProps, timelineRef, searchFabRef } =
+        useHomeRenderLogic();
     // Control data logic
     const { events, timelineData, selectedTime, setSelectedTime } =
         useHomeDataLogic();
@@ -32,6 +34,8 @@ const HomeLayout = () => {
                 <TimeLineSearch
                     timelineData={timelineData}
                     setSelectedTime={setSelectedTime}
+                    isTimelineShowing={isTimelineShowing}
+                    searchFabRef={searchFabRef}
                 />
                 <HomeLeftContent
                     className="order-2 lg:order-1"
@@ -53,21 +57,25 @@ function useHomeRenderLogic() {
     const [isTimelineShowing, setTimelineShowing] = useState<boolean>(false);
 
     const timelineRef = useRef(null);
+    const searchFabRef = useRef(null);
 
     // Handle swipe
     const swipeProps = useHorizontalSwipe({
-        minSwipeDistance: 150,
+        minSwipeDistance: SWIPE_LENGTH,
         handleRightSwipe: () => setTimelineShowing(true),
         handleLeftSwipe: () => setTimelineShowing(false),
     });
 
     // Handle outside click
-    useOutsideClick(timelineRef, () => setTimelineShowing(false));
+    useOutsideClick([timelineRef, searchFabRef], () =>
+        setTimelineShowing(false)
+    );
 
     return {
         isTimelineShowing,
         swipeProps,
         timelineRef,
+        searchFabRef,
     };
 }
 

@@ -8,11 +8,15 @@ import "./Timeline.Search.style.css";
 interface TimeLineSearchProps {
     timelineData: string[];
     setSelectedTime: React.Dispatch<React.SetStateAction<string | null>>;
+    isTimelineShowing: boolean;
+    searchFabRef: React.MutableRefObject<null>;
 }
 
 const TimeLineSearch: React.FC<TimeLineSearchProps> = ({
     timelineData,
     setSelectedTime,
+    isTimelineShowing,
+    searchFabRef,
 }) => {
     const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -39,7 +43,13 @@ const TimeLineSearch: React.FC<TimeLineSearchProps> = ({
     };
 
     return (
-        <form className="search-box shadow-lg" onSubmit={handleSearchTimeline}>
+        <form
+            className={`search-box shadow-lg ${
+                isTimelineShowing ? "show" : ""
+            }`}
+            onSubmit={handleSearchTimeline}
+            ref={searchFabRef}
+        >
             <input
                 type="text"
                 className="search-input ring-transparent"

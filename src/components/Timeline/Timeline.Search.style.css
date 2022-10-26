@@ -2,7 +2,6 @@
 .search-box {
     position: fixed;
     bottom: 30px;
-    right: 30px;
     background: #cd595a;
     height: 50px;
     border-radius: 50px;
@@ -60,4 +59,20 @@
 .search-input:not(:placeholder-shown) + .search-btn {
     background: #fff;
     color: #cd595a;
+}
+
+.search-box {
+    right: -133px;
+
+    transition: 0.9s;
+}
+
+.search-box.show {
+    right: 30px;
+}
+
+@media screen and (min-width: 1024px) {
+    .search-box {
+        right: 30px;
+    }
 }

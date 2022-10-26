@@ -8,3 +8,5 @@ export const DEFAULT_IMGS: Image[] = [
         key: "2",
     },
 ];
+
+export const SWIPE_LENGTH = 133;

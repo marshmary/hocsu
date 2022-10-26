@@ -43,7 +43,7 @@ const TimeLineSearch: React.FC<TimeLineSearchProps> = ({
             <input
                 type="text"
                 className="search-input ring-transparent"
-                placeholder="Năm..."
+                placeholder="Year..."
                 ref={searchInputRef}
             />
             <button

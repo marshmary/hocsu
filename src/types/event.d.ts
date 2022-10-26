@@ -29,6 +29,17 @@ interface HistoryEventCreateForm {
     images: File[];
 }
 
+interface HistoryEventEditForm {
+    id: string;
+    title: string;
+    place?: string;
+    from: string;
+    to: string;
+    content: string;
+    images: Image[];
+    imageFiles: Files[];
+}
+
 interface HistoryEventCreate {
     title: string;
     place?: string;

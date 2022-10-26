@@ -9,20 +9,20 @@ interface ImageDropzoneProps {
     maxFile?: number;
     maxSize?: number;
     className?: string;
-    defaultPreviews?: Array<ImagePreview>;
+    previewFieldName?: string;
     fieldName?: string; // useForm field name
     getValues: any; // useForm object
     setValue: any; // useForm object
-    error?: Merge<FieldError, (FieldError | undefined)[]> | undefined;
+    error?: any;
 }
 
 interface ImagePreview {
     key: string;
-    preview: string;
+    url: string;
 }
 
 const byteToMB = 1000000;
-const thumbnailInputField = "thumbnailFile";
+const thumbnailInputField = "imageFiles";
 
 const ImageDropzone: FunctionComponent<ImageDropzoneProps> = ({
     accept = {
@@ -31,15 +31,20 @@ const ImageDropzone: FunctionComponent<ImageDropzoneProps> = ({
     maxFile = 10,
     maxSize = 15 * byteToMB, // 15MB
     className,
-    defaultPreviews = [],
+    previewFieldName = "",
     fieldName = thumbnailInputField,
     getValues,
     setValue,
     error,
 }) => {
-    const savedImages = getValues(fieldName);
-    const [previews, setPreviews] =
-        useState<Array<ImagePreview>>(defaultPreviews);
+    const [previews, setPreviews] = useState<Image[]>([]);
+
+    useEffect(() => {
+        const savedPreviews = getValues(previewFieldName);
+        if (savedPreviews) {
+            setPreviews(savedPreviews);
+        }
+    }, []);
 
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
         accept: accept,
@@ -48,22 +53,21 @@ const ImageDropzone: FunctionComponent<ImageDropzoneProps> = ({
         onDropAccepted: (acceptedFiles) => {
             let newFiles = acceptedFiles.map((file) => {
                 const key = uuid();
-
                 setPreviews((prev) => [
                     ...prev,
                     {
                         key: key,
-                        preview: URL.createObjectURL(file),
+                        url: URL.createObjectURL(file),
                     },
                 ]);
-
                 return Object.assign(file, {
                     key: key,
                     isNew: true,
                 });
             });
 
-            setValue(fieldName, newFiles);
+            const savedImages = getValues(fieldName);
+            setValue(fieldName, [...savedImages, ...newFiles]);
         },
     });
 
@@ -79,14 +83,26 @@ const ImageDropzone: FunctionComponent<ImageDropzoneProps> = ({
 
     const handleRemoveSelectedImg = (key: string) => {
         // Prevent memory leaks when create preview link
-        let removeTarget = previews.filter((previes) => previes.key == key)[0];
-        URL.revokeObjectURL(removeTarget.preview);
+        let removeTarget = previews.filter((preview) => preview.key == key)[0];
+        URL.revokeObjectURL(removeTarget.url);
 
         // Set value without removeTarget
-        setPreviews(previews.filter((previes) => previes.key !== key));
+        setPreviews(previews.filter((preview) => preview.key !== key));
         const savedImages = getValues(fieldName);
-        const newImages = savedImages.filter((img: any) => img.key !== key);
-        setValue(fieldName, newImages);
+
+        if (
+            savedImages.filter((preview: Image) => preview.key === key).length >
+            0
+        ) {
+            const newImages = savedImages.filter((img: any) => img.key !== key);
+            setValue(fieldName, newImages);
+        } else {
+            const savedPreviews = getValues(previewFieldName);
+            const newImages = savedPreviews.filter(
+                (img: any) => img.key !== key
+            );
+            setValue(previewFieldName, newImages);
+        }
     };
 
     return (
@@ -147,7 +163,7 @@ const ImageDropzone: FunctionComponent<ImageDropzoneProps> = ({
                             </div>
                             <img
                                 className="w-full h-full object-cover"
-                                src={img.preview}
+                                src={img.url}
                                 alt=""
                             />
                         </div>

@@ -25,7 +25,7 @@ const RightContent: FunctionComponent<RightContentProps> = ({
     };
 
     return (
-        <div className={`h-full w-full grayscale ${className}`} style={style}>
+        <div className={`h-full w-full ${className}`} style={style}>
             <Carousel slideInterval={8000}>
                 {getImgs().map((img, index) => (
                     <div

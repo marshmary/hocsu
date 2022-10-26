@@ -21,7 +21,7 @@ const defaultValues = {
     title: "",
     from: "",
     to: "",
-    timeline: "",
+    // timeline: "",
     content: "",
     imageFiles: [],
 };
@@ -41,7 +41,7 @@ const ModalCreate: FunctionComponent<ModalCreateProps> = ({
             .string()
             .required("Please enter value for To!")
             .dateFormat("Please enter value with valid date format"),
-        timeline: yup.string().required("Please select or create new timeline"),
+        // timeline: yup.string().required("Please select or create new timeline"),
         content: yup.string().required("Please enter value for Content!"),
         imageFiles: yup.mixed().nullable(true),
     });
@@ -71,7 +71,7 @@ const ModalCreate: FunctionComponent<ModalCreateProps> = ({
                 images: values.imageFiles,
                 from: values.from,
                 to: values.to,
-                timeline: values.timeline,
+                // timeline: values.timeline,
             });
 
             setLoading(false);
@@ -150,7 +150,7 @@ const ModalCreate: FunctionComponent<ModalCreateProps> = ({
                         <span className="text-red-600 text-sm">{`${errors.to.message}`}</span>
                     )}
                 </div>
-                <div className="grid gap-y-2">
+                {/* <div className="grid gap-y-2">
                     <div className="flex flex-rows gap-1">
                         Timeline
                         <Tooltip
@@ -172,7 +172,7 @@ const ModalCreate: FunctionComponent<ModalCreateProps> = ({
                         }}
                         error={errors.timeline}
                     />
-                </div>
+                </div> */}
                 <div className="grid gap-y-2">
                     <div className="block">Content</div>
                     <Textarea
@@ -188,7 +188,6 @@ const ModalCreate: FunctionComponent<ModalCreateProps> = ({
                 <div className="grid gap-y-2">
                     <div className="block">Images</div>
                     <ImageDropzone
-                        // className="h-32"
                         fieldName="imageFiles"
                         getValues={getValues}
                         setValue={setValue}

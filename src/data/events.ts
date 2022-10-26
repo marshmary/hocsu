@@ -22,7 +22,7 @@ import normalizeText from "normalize-text";
 import { toast } from "react-toastify";
 import uuid from "react-uuid";
 import { db, storage } from "~/utils/firebase/firebase-config";
-import { createTimeline, getTimeline } from "./timelines";
+import { createTimeline, deleteTimeline, getTimeline } from "./timelines";
 
 // Get collection
 const collectionName = "events";
@@ -113,13 +113,13 @@ export const createEvent = async (historyEvent: HistoryEventCreateForm) => {
         from: Timestamp.fromDate(new Date(historyEvent.from)),
         images: imageUrls,
         time: `${historyEvent.from} - ${historyEvent.to}`,
-        timeline: historyEvent.timeline,
+        timeline: new Date(historyEvent.from).getFullYear().toString(),
         title: historyEvent.title,
     };
 
-    var existedTimeline = await getTimeline(historyEvent.timeline);
+    var existedTimeline = await getTimeline(historyEventUpload.timeline);
     if (!existedTimeline) {
-        createTimeline(historyEvent.timeline);
+        createTimeline(historyEventUpload.timeline);
     }
 
     // New document
@@ -153,6 +153,20 @@ export const deleteEvent = async (id: string) => {
                     );
                 });
         }
+    }
+
+    // Timeline is duplicated in event collection & timeline colelction
+    var eventsInTimeline = await listEventsByTimeline(event.timeline);
+    console.log(
+        "🚀 ~ file: events.ts ~ line 160 ~ deleteEvent ~ event.timeline",
+        event.timeline
+    );
+    console.log(
+        "🚀 ~ file: events.ts ~ line 160 ~ deleteEvent ~ eventsInTimeline",
+        eventsInTimeline
+    );
+    if (eventsInTimeline && eventsInTimeline.length === 1) {
+        await deleteTimeline(event.timeline);
     }
 
     await deleteDoc(docRef);

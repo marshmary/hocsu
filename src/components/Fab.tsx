@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { FunctionComponent, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import Icon from "~/components/Icon";
+import { HOW_TO_USE_URL } from "~/utils/constants";
 import { handleLogout } from "~/utils/logout";
 
 interface FabProps {}
@@ -22,6 +23,14 @@ const Fab: FunctionComponent<FabProps> = () => {
             onClick: () => {
                 // handle Logout
                 handleLogout();
+            },
+        },
+        {
+            label: "How to use",
+            icon: "lightbulb",
+            onClick: () => {
+                // open new window and show how to use
+                window.open(HOW_TO_USE_URL, "_blank");
             },
         },
     ];

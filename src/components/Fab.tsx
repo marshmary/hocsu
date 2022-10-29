@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { FunctionComponent, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import Icon from "~/components/Icon";
-import { HOW_TO_USE_URL } from "~/utils/constants";
 import { handleLogout } from "~/utils/logout";
 
 interface FabProps {}
@@ -29,8 +28,7 @@ const Fab: FunctionComponent<FabProps> = () => {
             label: "How to use",
             icon: "lightbulb",
             onClick: () => {
-                // open new window and show how to use
-                window.open(HOW_TO_USE_URL, "_blank");
+                navigate("/guide");
             },
         },
     ];
@@ -60,14 +58,16 @@ const Fab: FunctionComponent<FabProps> = () => {
             className={`fixed right-5 bottom-5 w-14 flex flex-col-reverse items-center gap-4 ${
                 !open ? "max-h-56" : "max-h-max"
             }`}
-            onClick={handleClick}
         >
             <motion.div
                 whileHover={{
                     scale: 1.05,
                 }}
             >
-                <li className="w-14 h-14 rounded-full drop-shadow-2xl cursor-pointer grid place-items-center bg-purple-500 hover:bg-purple-700 transition ease-in duration-200">
+                <li
+                    className="w-14 h-14 rounded-full drop-shadow-2xl cursor-pointer grid place-items-center bg-purple-500 hover:bg-purple-700 transition ease-in duration-200"
+                    onClick={handleClick}
+                >
                     <Icon icon="plus" size="xl" className="text-white" />
                 </li>
             </motion.div>
@@ -83,10 +83,8 @@ const Fab: FunctionComponent<FabProps> = () => {
                         }}
                     >
                         <li
-                            className={`w-10 h-10 rounded-full grid place-items-center bg-purple-500 drop-shadow-2xl cursor-pointer transition ease-in-out duration-150 delay-75 ${
-                                !open
-                                    ? "scale-0 opacity-0"
-                                    : "scale-1 opacity-1"
+                            className={`w-10 h-10 rounded-full grid place-items-center bg-purple-500 drop-shadow-2xl cursor-pointer transition ease-in-out duration-1000 delay-75 ${
+                                !open ? "scale-0 hidden" : "scale-1 block"
                             }`}
                             onClick={action.onClick}
                         >

@@ -83,7 +83,9 @@ const AdminLayout = () => {
         <>
             <div className="bg-[#F0F0F5] w-screen min-h-screen">
                 <div className="flex justify-between p-3">
-                    <div className="text-lg font-bold">Event list</div>
+                    <div className="text-2xl font-semibold">
+                        Events management page
+                    </div>
                     <Button
                         color="success"
                         onClick={() => {

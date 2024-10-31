@@ -1,22 +1,27 @@
+import {
+    faCalendarAlt,
+    faClipboardQuestion,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "@mantine/core";
-import { useCallback } from "react";
 import { useLocation, useNavigate } from "react-router";
 
 const Config = [
     {
         title: "Event management",
         path: "/admin",
+        icon: <FontAwesomeIcon icon={faCalendarAlt} />,
     },
     {
         title: "Quiz management",
         path: "/admin/quiz",
+        icon: <FontAwesomeIcon icon={faClipboardQuestion} />,
     },
 ];
 
 export const AdminLayoutNavbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    console.log(location.pathname);
     return (
         <>
             {Config.map((item) => (
@@ -24,7 +29,7 @@ export const AdminLayoutNavbar = () => {
                     key={item.path}
                     justify="space-between"
                     fullWidth
-                    rightSection
+                    rightSection={item.icon}
                     variant="light"
                     color={location.pathname === item.path ? "blue" : "gray"}
                     onClick={() => navigate(item.path)}

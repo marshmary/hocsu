@@ -1,7 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Button, Modal } from "flowbite-react";
-import React from "react";
-import { FunctionComponent } from "react";
+import React, { FunctionComponent } from "react";
 import ReactDOM from "react-dom";
 
 interface AppModalProps {
@@ -56,7 +54,7 @@ const AppModal: FunctionComponent<AppModalProps> = ({
         <Transition.Root show={open} as={React.Fragment}>
             <Dialog
                 as="div"
-                className="fixed z-50 inset-0 overflow-y-auto"
+                className="fixed z-[99999] inset-0 overflow-y-auto"
                 initialFocus={cancelButtonRef}
                 onClose={() => {}}
                 onClick={(e: React.MouseEvent) => {

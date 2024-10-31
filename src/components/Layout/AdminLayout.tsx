@@ -1,7 +1,8 @@
 import { AppShell, Burger, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { AdminLayoutNavbar } from "./AdminLayout.Navbar";
 import { Outlet } from "react-router";
+import PageLoadAnimation from "../Loading/PageLoadAnimation";
+import { AdminLayoutNavbar } from "./AdminLayout.Navbar";
 
 export const AdminLayout = () => {
     const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
@@ -37,7 +38,9 @@ export const AdminLayout = () => {
             </AppShell.Navbar>
 
             <AppShell.Main className="bg-[#F0F0F5]">
-                <Outlet />
+                <PageLoadAnimation key="">
+                    <Outlet />
+                </PageLoadAnimation>
             </AppShell.Main>
         </AppShell>
     );

@@ -31,5 +31,6 @@ dist-ssr
 .env.test.local
 .env.production.local
 .env.*
+!.env.example
 
 package-lock.json

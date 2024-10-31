@@ -81,7 +81,7 @@ const AdminLayout = () => {
 
     return (
         <>
-            <div className="bg-[#F0F0F5] w-screen min-h-screen">
+            <div className="bg-[#F0F0F5]">
                 <div className="flex justify-between p-3">
                     <div className="text-2xl font-semibold">
                         Events management page

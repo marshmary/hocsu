@@ -3,6 +3,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { Outlet } from "react-router";
 import PageLoadAnimation from "../Loading/PageLoadAnimation";
 import { AdminLayoutNavbar } from "./AdminLayout.Navbar";
+import Fab from "../Fab";
 
 export const AdminLayout = () => {
     const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
@@ -42,6 +43,8 @@ export const AdminLayout = () => {
                     <Outlet />
                 </PageLoadAnimation>
             </AppShell.Main>
+
+            <Fab />
         </AppShell>
     );
 };

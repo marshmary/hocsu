@@ -1,5 +1,7 @@
+import { QuizManagementContainer } from "~/modules/quiz-managment/components";
+
 const Quiz = () => {
-    return <div>Quiz</div>;
+  return <QuizManagementContainer />;
 };
 
 export default Quiz;

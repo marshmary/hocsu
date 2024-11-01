@@ -3,7 +3,7 @@ import { createTheme, MantineProvider } from "@mantine/core";
 const theme = createTheme({});
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
-    children,
+  children,
 }) => {
-    return <MantineProvider theme={theme}>{children}</MantineProvider>;
+  return <MantineProvider theme={theme}>{children}</MantineProvider>;
 };

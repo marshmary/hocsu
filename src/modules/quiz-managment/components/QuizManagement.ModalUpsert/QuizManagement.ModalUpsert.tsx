@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import Modal from "~/components/Modal/Modal";
 import yup from "~/utils/yup-config";
 import { QuizManagementModalUpsertBody } from "./QuizManagement.ModalUpsert.Body";
+import { defaultAnswerList } from "../../config";
 
 interface Props {
   open: boolean;
@@ -16,7 +17,14 @@ export const QuizManagementModalUpsert: React.FC<Props> = ({
   setOpen,
   successCallback,
 }) => {
-  const defaultValues = useMemo(() => ({}), []);
+  const defaultValues: QuizForm = useMemo(
+    () => ({
+      event: "",
+      question: "",
+      answers: defaultAnswerList,
+    }),
+    []
+  );
 
   const {
     handleSubmit,
@@ -47,6 +55,7 @@ export const QuizManagementModalUpsert: React.FC<Props> = ({
           control={control}
           successCallback={successCallback}
           setOpen={setOpen}
+          handleDecline={handleDecline}
         />
       }
       hasFooter={false}
@@ -73,7 +82,11 @@ const schema = yup.object().shape({
       "Please mark at least 1 answer as correct answer!",
       (answers) => {
         if (!answers) return false;
-        return !answers.find((each) => !each?.isCorrect);
+        const correctAnswer = answers.find((each) => each?.isCorrect);
+        if (!correctAnswer) {
+          return false;
+        }
+        return true;
       }
     ),
 });

@@ -18,6 +18,7 @@ interface BodyProps {
   control: Control<QuizForm, any>;
   successCallback: () => void;
   setOpen: (open: boolean) => void;
+  handleDecline: () => void;
 }
 
 export const QuizManagementModalUpsertBody: React.FC<BodyProps> = ({
@@ -27,6 +28,7 @@ export const QuizManagementModalUpsertBody: React.FC<BodyProps> = ({
   control,
   successCallback,
   setOpen,
+  handleDecline,
 }) => {
   const { data } = useEventQuery();
 
@@ -42,10 +44,15 @@ export const QuizManagementModalUpsertBody: React.FC<BodyProps> = ({
 
   const { isPending, mutateAsync } = useQuizCreateMutation();
   const onSubmit = async (values: QuizForm) => {
-    await mutateAsync(values);
-    successCallback();
-    toast.info("Create quiz successfully!");
-    setOpen(false);
+    try {
+      await mutateAsync(values);
+      successCallback();
+      toast.info("Create quiz successfully!");
+      setOpen(false);
+    } catch {
+      toast.info("Fail to create quiz. Please check your input again!");
+    }
+    handleDecline();
   };
 
   return (

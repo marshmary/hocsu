@@ -62,7 +62,6 @@ export const QuizManagementModalUpsert: React.FC<Props> = ({
           control={control}
           successCallback={successCallback}
           setOpen={setOpen}
-          handleDecline={handleDecline}
           isEdit={isEdit}
           selectedItem={selectedItem}
         />

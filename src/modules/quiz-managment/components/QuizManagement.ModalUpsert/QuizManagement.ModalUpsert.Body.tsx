@@ -1,5 +1,4 @@
-import { Button, Select, Textarea } from "flowbite-react";
-import { useMemo } from "react";
+import { Button, Textarea } from "flowbite-react";
 import {
   Control,
   FieldErrors,
@@ -7,7 +6,7 @@ import {
   UseFormRegister,
 } from "react-hook-form";
 import { toast } from "react-toastify";
-import { useEventQuery } from "~/modules/event-management/queries";
+import { SelectEvent } from "~/modules/event-management/queries/components";
 import { useQuizUpsertMutation } from "../../queries/quiz-upsert.mutation";
 import { ControlledAnswerList } from "./Answers/ControlledAnswerList";
 
@@ -18,7 +17,6 @@ interface BodyProps {
   control: Control<QuizForm, any>;
   successCallback: () => void;
   setOpen: (open: boolean) => void;
-  handleDecline: () => void;
   isEdit: boolean;
   selectedItem: Quiz | null;
 }
@@ -30,22 +28,9 @@ export const QuizManagementModalUpsertBody: React.FC<BodyProps> = ({
   control,
   successCallback,
   setOpen,
-  handleDecline,
   isEdit,
   selectedItem,
 }) => {
-  const { data } = useEventQuery();
-
-  const SelectOptions = useMemo(() => {
-    if (!data || !Array.isArray(data)) return [];
-
-    return data.map((item) => (
-      <option value={item.id} key={item.id}>
-        {item.title}
-      </option>
-    ));
-  }, [data]);
-
   const { isPending, mutate } = useQuizUpsertMutation(isEdit);
   const onSubmit = async (values: QuizForm) => {
     let payload = { ...values };
@@ -76,16 +61,7 @@ export const QuizManagementModalUpsertBody: React.FC<BodyProps> = ({
       >
         <div className="grid gap-y-2">
           <div className="block">Event</div>
-          <Select
-            id={register("event").name}
-            {...register("event")}
-            defaultValue=""
-          >
-            <option value="" disabled hidden>
-              Select event
-            </option>
-            {SelectOptions}
-          </Select>
+          <SelectEvent id={register("event").name} {...register("event")} />
           {errors.event?.message && (
             <span className="text-red-600 text-sm">{`${errors.event.message}`}</span>
           )}

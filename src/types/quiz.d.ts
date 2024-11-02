@@ -21,6 +21,7 @@ interface QuizFilter {
   page: number;
   limit: number;
   searchKey?: string;
+  eventId?: string;
 }
 
 interface QuizFilterResult {

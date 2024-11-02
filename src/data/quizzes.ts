@@ -63,6 +63,10 @@ export const deleteQuiz = async (id: string) => {
 export const getQuizzes = async (filter: QuizFilter) => {
   let q = query(collectionRef);
 
+  if (filter.eventId) {
+    q = query(q, where("event", "==", filter.eventId));
+  }
+
   const snapshot = await getDocs(q);
   if (snapshot.empty) {
     return emptyFilterResult;

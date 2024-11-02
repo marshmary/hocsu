@@ -1,12 +1,12 @@
 import { Button, Pagination } from "flowbite-react";
 import { useMemo, useState } from "react";
-import EventFilter from "~/components/Admin/Admin.EventFilter";
 import Loading from "~/components/Loading/Loading";
 import { useModal } from "~/components/Modal";
 import Table from "~/components/Table";
 import { useQuizListQuery } from "../../queries/quiz-list.query";
 import { QuizManagementModalDetele } from "../QuizManagement.ModalDelete";
 import { QuizManagementModalUpsert } from "../QuizManagement.ModalUpsert";
+import { QuizManagementFilter } from "./QuizManagement.Filter";
 
 export const QuizManagementContainer = () => {
   const { open: modalCreate, setOpen: setModalCreate } = useModal();
@@ -74,7 +74,7 @@ export const QuizManagementContainer = () => {
         </Button>
       </div>
       <div className="p-3">
-        <EventFilter filter={filter} setFilter={setFilter} />
+        <QuizManagementFilter setFilter={setFilter} />
       </div>
       <div className="p-3">
         {isFetching ? (

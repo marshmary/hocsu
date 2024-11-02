@@ -5,6 +5,7 @@ interface Answer {
 }
 
 interface QuizForm {
+  id?: string;
   question: string;
   event: string;
   answers: Answer[];

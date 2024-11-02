@@ -25,17 +25,20 @@ export const AnswerItem: React.FC<Props> = ({
     <div className="flex flex-row items-center justify-between gap-4">
       <Tooltip content="Mark this as correct answer">
         <Switch
+          defaultChecked={item.isCorrect}
           id={register(`${name}.${index}.isCorrect`).name}
           {...register(`${name}.${index}.isCorrect`)}
           size="lg"
         />
       </Tooltip>
+
       <TextInput
         id={register(`${name}.${index}.answer`).name}
         {...register(`${name}.${index}.answer`)}
         placeholder="Enter answer"
         className="flex-1"
       />
+
       <Tooltip content="Remove answer">
         <Button
           className="bg-red-600 hover:!bg-red-900"

@@ -1,11 +1,10 @@
 import { Button } from "flowbite-react";
 import { useCallback, useMemo, useState } from "react";
-import { AnswerItem } from "./AnswerItem";
 import { UseFormRegister } from "react-hook-form";
-import { defaultAnswerItem } from "~/modules/quiz-managment/config";
 import uuid from "react-uuid";
+import { defaultAnswerItem } from "~/modules/quiz-managment/config";
+import { AnswerItem } from "./AnswerItem";
 import { ModalDeleteAnswer } from "./ModalDeleteAnswer";
-import { useDisclosure } from "@mantine/hooks";
 
 interface Props {
   value: Answer[];
@@ -46,6 +45,7 @@ export const AnswerList: React.FC<Props> = ({
           Add new answer
         </Button>
       </div>
+
       <div className="flex flex-col gap-3">
         {value.map((item, index) => (
           <AnswerItem

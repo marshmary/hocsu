@@ -6,10 +6,10 @@ import {
   UseFormHandleSubmit,
   UseFormRegister,
 } from "react-hook-form";
-import { useEventQuery } from "~/modules/event-management/queries";
-import { ControlledAnswerList } from "./Answers/ControlledAnswerList";
-import { useQuizCreateMutation } from "../../queries";
 import { toast } from "react-toastify";
+import { useEventQuery } from "~/modules/event-management/queries";
+import { useQuizUpsertMutation } from "../../queries/quiz-upsert.mutation";
+import { ControlledAnswerList } from "./Answers/ControlledAnswerList";
 
 interface BodyProps {
   register: UseFormRegister<QuizForm>;
@@ -19,6 +19,8 @@ interface BodyProps {
   successCallback: () => void;
   setOpen: (open: boolean) => void;
   handleDecline: () => void;
+  isEdit: boolean;
+  selectedItem: Quiz | null;
 }
 
 export const QuizManagementModalUpsertBody: React.FC<BodyProps> = ({
@@ -29,6 +31,8 @@ export const QuizManagementModalUpsertBody: React.FC<BodyProps> = ({
   successCallback,
   setOpen,
   handleDecline,
+  isEdit,
+  selectedItem,
 }) => {
   const { data } = useEventQuery();
 
@@ -42,17 +46,26 @@ export const QuizManagementModalUpsertBody: React.FC<BodyProps> = ({
     ));
   }, [data]);
 
-  const { isPending, mutateAsync } = useQuizCreateMutation();
+  const { isPending, mutate } = useQuizUpsertMutation(isEdit);
   const onSubmit = async (values: QuizForm) => {
-    try {
-      await mutateAsync(values);
-      successCallback();
-      toast.info("Create quiz successfully!");
-      setOpen(false);
-    } catch {
-      toast.info("Fail to create quiz. Please check your input again!");
+    let payload = { ...values };
+    if (isEdit) {
+      payload.id = selectedItem?.id;
     }
-    handleDecline();
+    mutate(payload, {
+      onSuccess: () => {
+        successCallback();
+        toast.info(`${isEdit ? "Edit" : "Create"} quiz successfully!`);
+        setOpen(false);
+      },
+      onError: () => {
+        toast.info(
+          `Fail to ${
+            isEdit ? "edit" : "create"
+          } quiz. Please check your input again!`
+        );
+      },
+    });
   };
 
   return (
@@ -101,7 +114,7 @@ export const QuizManagementModalUpsertBody: React.FC<BodyProps> = ({
 
         <div className="w-full flex justify-end">
           <Button type="submit" disabled={isPending}>
-            Add
+            {isEdit ? "Edit" : "Add"}
           </Button>
         </div>
       </form>

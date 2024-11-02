@@ -7,6 +7,7 @@ import {
   getDoc,
   getDocs,
   query,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import normalizeText from "normalize-text";
@@ -26,6 +27,26 @@ export const createQuiz = async (quiz: QuizForm) => {
     createdAt: Date.now(),
   });
   return res;
+};
+
+export const updateQuiz = async (quiz: QuizForm) => {
+  if (!quiz.id) {
+    toast.warning("Quiz not found!");
+    return null;
+  }
+
+  const docRef = doc(db, collectionName, quiz.id);
+  const snapshot = await getDoc(docRef);
+  if (!snapshot.exists()) {
+    toast.warning("Quiz not found!");
+    return null;
+  }
+
+  await updateDoc(docRef, {
+    question: quiz.question,
+    event: quiz.event,
+    answers: quiz.answers,
+  });
 };
 
 export const deleteQuiz = async (id: string) => {

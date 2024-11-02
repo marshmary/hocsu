@@ -1,10 +1,10 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import Modal from "~/components/Modal/Modal";
 import yup from "~/utils/yup-config";
-import { QuizManagementModalUpsertBody } from "./QuizManagement.ModalUpsert.Body";
 import { defaultAnswerList } from "../../config";
+import { QuizManagementModalUpsertBody } from "./QuizManagement.ModalUpsert.Body";
 
 interface Props {
   open: boolean;
@@ -13,20 +13,19 @@ interface Props {
   selectedItem: Quiz | null;
 }
 
+const defaultValues = {
+  event: "",
+  question: "",
+  answers: defaultAnswerList,
+};
+
 export const QuizManagementModalUpsert: React.FC<Props> = ({
   open,
   setOpen,
   successCallback,
   selectedItem,
 }) => {
-  const defaultValues: QuizForm = useMemo(
-    () => ({
-      event: "",
-      question: "",
-      answers: defaultAnswerList,
-    }),
-    []
-  );
+  const isEdit = useMemo(() => !!selectedItem, [selectedItem]);
 
   const {
     handleSubmit,
@@ -40,15 +39,21 @@ export const QuizManagementModalUpsert: React.FC<Props> = ({
     defaultValues,
   });
 
-  const handleDecline = () => {
-    reset(defaultValues);
-  };
+  useEffect(() => {
+    reset({
+      event: selectedItem?.event || "",
+      question: selectedItem?.question || "",
+      answers: selectedItem?.answers || defaultAnswerList,
+    });
+  }, [selectedItem]);
+
+  const handleDecline = () => {};
 
   return (
     <Modal
       open={open}
       setOpen={setOpen}
-      header="New quiz"
+      header={isEdit ? "Edit quiz" : "New quiz"}
       body={
         <QuizManagementModalUpsertBody
           register={register}
@@ -58,6 +63,8 @@ export const QuizManagementModalUpsert: React.FC<Props> = ({
           successCallback={successCallback}
           setOpen={setOpen}
           handleDecline={handleDecline}
+          isEdit={isEdit}
+          selectedItem={selectedItem}
         />
       }
       hasFooter={false}

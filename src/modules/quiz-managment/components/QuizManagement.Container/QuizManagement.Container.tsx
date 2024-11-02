@@ -5,8 +5,8 @@ import Loading from "~/components/Loading/Loading";
 import { useModal } from "~/components/Modal";
 import Table from "~/components/Table";
 import { useQuizListQuery } from "../../queries/quiz-list.query";
-import { QuizManagementModalUpsert } from "../QuizManagement.ModalUpsert";
 import { QuizManagementModalDetele } from "../QuizManagement.ModalDelete";
+import { QuizManagementModalUpsert } from "../QuizManagement.ModalUpsert";
 
 export const QuizManagementContainer = () => {
   const { open: modalCreate, setOpen: setModalCreate } = useModal();
@@ -31,8 +31,8 @@ export const QuizManagementContainer = () => {
             <span
               className="font-medium text-blue-600 hover:underline dark:text-blue-500 cursor-pointer"
               onClick={() => {
-                setModalCreate(true);
                 setSelectedItem(each);
+                setModalCreate(true);
               }}
             >
               Edit
@@ -40,8 +40,8 @@ export const QuizManagementContainer = () => {
             <span
               className="font-medium text-red-600 hover:underline dark:text-red-500 cursor-pointer"
               onClick={() => {
-                setModalDelete(true);
                 setSelectedItem(each);
+                setModalDelete(true);
               }}
             >
               Delete
@@ -66,6 +66,7 @@ export const QuizManagementContainer = () => {
         <Button
           color="success"
           onClick={() => {
+            setSelectedItem(null);
             setModalCreate(true);
           }}
         >
@@ -102,7 +103,6 @@ export const QuizManagementContainer = () => {
       <QuizManagementModalUpsert
         open={modalCreate}
         setOpen={(open: boolean) => {
-          setSelectedItem(null);
           setModalCreate(open);
         }}
         successCallback={refetch}

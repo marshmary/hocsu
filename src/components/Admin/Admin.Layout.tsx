@@ -1,13 +1,12 @@
 import { Button, Pagination } from "flowbite-react";
 import { useEffect, useState } from "react";
-import Table from "~/components/Table";
 import EventFilter from "~/components/Admin/Admin.EventFilter";
 import { useModal } from "~/components/Modal";
-import ModalCreate from "./Admin.ModalCreate";
-import ModalDelete from "./Admin.ModalDelete";
+import Table from "~/components/Table";
 import { getHistoryEvents } from "~/data/events";
 import Loading from "../Loading/Loading";
-import Fab from "../Fab";
+import ModalCreate from "./Admin.ModalCreate";
+import ModalDelete from "./Admin.ModalDelete";
 import ModalEdit from "./Admin.ModalEdit";
 
 const AdminLayout = () => {
@@ -80,74 +79,71 @@ const AdminLayout = () => {
     };
 
     return (
-        <>
-            <div className="bg-[#F0F0F5]">
-                <div className="flex justify-between p-3">
-                    <div className="text-2xl font-semibold">
-                        Events management page
-                    </div>
-                    <Button
-                        color="success"
-                        onClick={() => {
-                            setModalCreate(true);
-                        }}
-                    >
-                        Add new
-                    </Button>
+        <div className="bg-[#F0F0F5]">
+            <div className="flex justify-between p-3">
+                <div className="text-2xl font-semibold">
+                    Events management page
                 </div>
-                <div className="p-3">
-                    <EventFilter filter={filter} setFilter={setFilter} />
-                </div>
-                <div className="p-3">
-                    {!rowsData ? (
-                        <div className="w-full grid place-items-center">
-                            <Loading />
-                        </div>
-                    ) : rowsData && rowsData.length === 0 ? (
-                        <div className="w-full grid place-items-center">
-                            No item found
-                        </div>
-                    ) : (
-                        <>
-                            <Table
-                                heads={heads}
-                                rows={rowsData}
-                                hasRowOptions={false}
-                            />
-                            {rowsData && totalPages > 1 && (
-                                <div className="mt-2 w-full grid place-items-start">
-                                    <Pagination
-                                        currentPage={currentPage}
-                                        onPageChange={handlePageChange}
-                                        showIcons={true}
-                                        totalPages={totalPages}
-                                    />
-                                </div>
-                            )}
-                        </>
-                    )}
-                </div>
-
-                <ModalCreate
-                    open={modalCreate}
-                    setOpen={setModalCreate}
-                    successCallback={fetchData}
-                />
-                <ModalDelete
-                    open={modalDelete}
-                    setOpen={setModalDelete}
-                    selected={selectedEvent}
-                    successCallback={fetchData}
-                />
-                <ModalEdit
-                    open={modalEdit}
-                    setOpen={setModalEdit}
-                    selected={selectedEvent}
-                    successCallback={fetchData}
-                />
+                <Button
+                    color="success"
+                    onClick={() => {
+                        setModalCreate(true);
+                    }}
+                >
+                    Add new
+                </Button>
             </div>
-            <Fab />
-        </>
+            <div className="p-3">
+                <EventFilter filter={filter} setFilter={setFilter} />
+            </div>
+            <div className="p-3">
+                {!rowsData ? (
+                    <div className="w-full grid place-items-center">
+                        <Loading />
+                    </div>
+                ) : rowsData && rowsData.length === 0 ? (
+                    <div className="w-full grid place-items-center">
+                        No item found
+                    </div>
+                ) : (
+                    <>
+                        <Table
+                            heads={heads}
+                            rows={rowsData}
+                            hasRowOptions={false}
+                        />
+                        {rowsData && totalPages > 1 && (
+                            <div className="mt-2 w-full grid place-items-start">
+                                <Pagination
+                                    currentPage={currentPage}
+                                    onPageChange={handlePageChange}
+                                    showIcons={true}
+                                    totalPages={totalPages}
+                                />
+                            </div>
+                        )}
+                    </>
+                )}
+            </div>
+
+            <ModalCreate
+                open={modalCreate}
+                setOpen={setModalCreate}
+                successCallback={fetchData}
+            />
+            <ModalDelete
+                open={modalDelete}
+                setOpen={setModalDelete}
+                selected={selectedEvent}
+                successCallback={fetchData}
+            />
+            <ModalEdit
+                open={modalEdit}
+                setOpen={setModalEdit}
+                selected={selectedEvent}
+                successCallback={fetchData}
+            />
+        </div>
     );
 };
 

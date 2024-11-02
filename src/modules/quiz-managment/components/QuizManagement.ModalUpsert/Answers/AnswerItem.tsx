@@ -24,7 +24,11 @@ export const AnswerItem: React.FC<Props> = ({
   return (
     <div className="flex flex-row items-center justify-between gap-4">
       <Tooltip content="Mark this as correct answer">
-        <Switch size="lg" />
+        <Switch
+          id={register(`${name}.${index}.isCorrect`).name}
+          {...register(`${name}.${index}.isCorrect`)}
+          size="lg"
+        />
       </Tooltip>
       <TextInput
         id={register(`${name}.${index}.answer`).name}

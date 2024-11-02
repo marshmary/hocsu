@@ -45,6 +45,8 @@ export const QuizManagementModalUpsert: React.FC<Props> = ({
           handleSubmit={handleSubmit}
           errors={errors}
           control={control}
+          successCallback={successCallback}
+          setOpen={setOpen}
         />
       }
       hasFooter={false}
@@ -54,15 +56,24 @@ export const QuizManagementModalUpsert: React.FC<Props> = ({
 };
 
 const schema = yup.object().shape({
-  title: yup.string().required("Please enter value for Title!"),
-  from: yup
-    .string()
-    .required("Please enter value for From!")
-    .dateFormat("Please enter value with valid date format"),
-  to: yup
-    .string()
-    .required("Please enter value for To!")
-    .dateFormat("Please enter value with valid date format"),
-  content: yup.string().required("Please enter value for Content!"),
-  imageFiles: yup.mixed().nullable(true),
+  event: yup.string().required("Please select an Event!"),
+  question: yup.string().required("Please enter value for Question!"),
+  answers: yup
+    .array()
+    .test(
+      "answer-value-not-null",
+      "Please enter value for answer!",
+      (answers) => {
+        if (!answers) return false;
+        return !answers.find((each) => !each?.answer);
+      }
+    )
+    .test(
+      "at-least-one-correct-answer",
+      "Please mark at least 1 answer as correct answer!",
+      (answers) => {
+        if (!answers) return false;
+        return !answers.find((each) => !each?.isCorrect);
+      }
+    ),
 });

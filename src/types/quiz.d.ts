@@ -6,6 +6,6 @@ interface Answer {
 
 interface QuizForm {
   question: string;
-  time: string;
+  event: string;
   answers: Answer[];
 }

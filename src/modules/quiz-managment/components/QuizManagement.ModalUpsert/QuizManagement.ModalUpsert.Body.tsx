@@ -8,12 +8,16 @@ import {
 } from "react-hook-form";
 import { useEventQuery } from "~/modules/event-management/queries";
 import { ControlledAnswerList } from "./Answers/ControlledAnswerList";
+import { useQuizCreateMutation } from "../../queries";
+import { toast } from "react-toastify";
 
 interface BodyProps {
   register: UseFormRegister<QuizForm>;
   handleSubmit: UseFormHandleSubmit<QuizForm, undefined>;
   errors: FieldErrors<QuizForm>;
   control: Control<QuizForm, any>;
+  successCallback: () => void;
+  setOpen: (open: boolean) => void;
 }
 
 export const QuizManagementModalUpsertBody: React.FC<BodyProps> = ({
@@ -21,6 +25,8 @@ export const QuizManagementModalUpsertBody: React.FC<BodyProps> = ({
   handleSubmit,
   errors,
   control,
+  successCallback,
+  setOpen,
 }) => {
   const { data } = useEventQuery();
 
@@ -29,12 +35,21 @@ export const QuizManagementModalUpsertBody: React.FC<BodyProps> = ({
 
     return data.map((item) => (
       <option value={item.id} key={item.id}>
-        {item.time}
+        {item.title}
       </option>
     ));
   }, [data]);
 
-  const onSubmit = () => {};
+  const { isPending, mutateAsync } = useQuizCreateMutation();
+  const onSubmit = async (values: QuizForm) => {
+    console.log(values);
+    return;
+    await mutateAsync(values);
+    successCallback();
+    toast.info("Create quiz successfully!");
+    setOpen(false);
+  };
+
   return (
     <div>
       <form
@@ -42,19 +57,19 @@ export const QuizManagementModalUpsertBody: React.FC<BodyProps> = ({
         onSubmit={handleSubmit(onSubmit)}
       >
         <div className="grid gap-y-2">
-          <div className="block">Time</div>
+          <div className="block">Event</div>
           <Select
-            id={register("time").name}
-            {...register("time")}
+            id={register("event").name}
+            {...register("event")}
             defaultValue=""
           >
             <option value="" disabled hidden>
-              Select time
+              Select event
             </option>
             {SelectOptions}
           </Select>
-          {errors.time?.message && (
-            <span className="text-red-600 text-sm">{`${errors.time.message}`}</span>
+          {errors.event?.message && (
+            <span className="text-red-600 text-sm">{`${errors.event.message}`}</span>
           )}
         </div>
 
@@ -74,10 +89,13 @@ export const QuizManagementModalUpsertBody: React.FC<BodyProps> = ({
         <div className="grid gap-y-2">
           <div className="block">Answers</div>
           <ControlledAnswerList control={control} register={register} />
+          {errors.answers?.message && (
+            <span className="text-red-600 text-sm">{`${errors.answers.message}`}</span>
+          )}
         </div>
 
         <div className="w-full flex justify-end">
-          <Button type="submit" disabled={false}>
+          <Button type="submit" disabled={isPending}>
             Add
           </Button>
         </div>

@@ -42,8 +42,6 @@ export const QuizManagementModalUpsertBody: React.FC<BodyProps> = ({
 
   const { isPending, mutateAsync } = useQuizCreateMutation();
   const onSubmit = async (values: QuizForm) => {
-    console.log(values);
-    return;
     await mutateAsync(values);
     successCallback();
     toast.info("Create quiz successfully!");

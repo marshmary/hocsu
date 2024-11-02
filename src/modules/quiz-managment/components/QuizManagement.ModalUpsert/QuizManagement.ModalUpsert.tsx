@@ -10,12 +10,14 @@ interface Props {
   open: boolean;
   setOpen: (open: boolean) => void;
   successCallback: () => void;
+  selectedItem: Quiz | null;
 }
 
 export const QuizManagementModalUpsert: React.FC<Props> = ({
   open,
   setOpen,
   successCallback,
+  selectedItem,
 }) => {
   const defaultValues: QuizForm = useMemo(
     () => ({

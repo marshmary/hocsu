@@ -1,73 +1,58 @@
 import { Button, Pagination } from "flowbite-react";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import EventFilter from "~/components/Admin/Admin.EventFilter";
+import Loading from "~/components/Loading/Loading";
 import { useModal } from "~/components/Modal";
 import Table from "~/components/Table";
-import { getHistoryEvents } from "~/data/events";
-import Loading from "~/components/Loading/Loading";
+import { useQuizListQuery } from "../../queries/quiz-list.query";
 import { QuizManagementModalUpsert } from "../QuizManagement.ModalUpsert";
+import { QuizManagementModalDetele } from "../QuizManagement.ModalDelete";
 
 export const QuizManagementContainer = () => {
   const { open: modalCreate, setOpen: setModalCreate } = useModal();
   const { open: modalDelete, setOpen: setModalDelete } = useModal();
+  const [selectedItem, setSelectedItem] = useState<Quiz | null>(null);
 
-  const [selectedItem, setSelectedItem] = useState<HistoryEvent | null>(null);
-
-  const [rowsData, setRowsData] = useState<TableRowData[]>(null!);
-  const [totalPages, setTotalPages] = useState<number>(0);
-  const [filter, setFilter] = useState<AdminPageFilter>({
+  const [filter, setFilter] = useState<QuizFilter>({
     limit: 50,
     page: 1,
   });
 
-  const fetchData = () => {
-    getHistoryEvents(filter)
-      .then((result) => {
-        setRowsData(
-          result.events.map((event) => ({
-            id: event.id,
-            name: <p>{event.title}</p>,
-            time: <p className="whitespace-nowrap">{event.time}</p>,
-            content: (
-              <p className="truncate sm:whitespace-normal w-72 sm:w-auto">
-                {event.content}
-              </p>
-            ),
-            options: (
-              <span className="flex gap-3">
-                <p
-                  className="font-medium text-blue-600 hover:underline dark:text-blue-500 cursor-pointer"
-                  onClick={() => {
-                    setSelectedItem(event);
-                  }}
-                >
-                  Edit
-                </p>
-                <p
-                  className="font-medium text-red-600 hover:underline dark:text-red-500 cursor-pointer"
-                  onClick={() => {
-                    setModalDelete(true);
-                    setSelectedItem(event);
-                  }}
-                >
-                  Delete
-                </p>
-              </span>
-            ),
-          }))
-        );
-        setTotalPages(result.totalPages);
-      })
-      .catch(() => {
-        setRowsData([]);
-      });
-  };
+  const { data, isFetching, refetch } = useQuizListQuery(filter);
+  const pageCount = useMemo(() => data?.pageCount || 0, [data?.pageCount]);
+  const rowsData = useMemo(
+    () =>
+      (data?.data || []).map((each) => ({
+        id: each.id,
+        event: each.event,
+        question: each.question,
+        actions: (
+          <div className="flex gap-3">
+            <span
+              className="font-medium text-blue-600 hover:underline dark:text-blue-500 cursor-pointer"
+              onClick={() => {
+                setModalCreate(true);
+                setSelectedItem(each);
+              }}
+            >
+              Edit
+            </span>
+            <span
+              className="font-medium text-red-600 hover:underline dark:text-red-500 cursor-pointer"
+              onClick={() => {
+                setModalDelete(true);
+                setSelectedItem(each);
+              }}
+            >
+              Delete
+            </span>
+          </div>
+        ),
+      })),
+    [data?.data]
+  );
 
-  useEffect(() => {
-    fetchData();
-  }, [filter]);
-
-  const heads = ["Title", "Time", "Content", ""];
+  const heads = ["Event", "Question", ""];
 
   const [currentPage, setCurrentPage] = useState(1);
   const handlePageChange = (page: number) => {
@@ -91,7 +76,7 @@ export const QuizManagementContainer = () => {
         <EventFilter filter={filter} setFilter={setFilter} />
       </div>
       <div className="p-3">
-        {!rowsData ? (
+        {isFetching ? (
           <div className="w-full grid place-items-center">
             <Loading />
           </div>
@@ -100,13 +85,13 @@ export const QuizManagementContainer = () => {
         ) : (
           <>
             <Table heads={heads} rows={rowsData} hasRowOptions={false} />
-            {rowsData && totalPages > 1 && (
+            {rowsData && pageCount > 1 && (
               <div className="mt-2 w-full grid place-items-start">
                 <Pagination
                   currentPage={currentPage}
                   onPageChange={handlePageChange}
                   showIcons={true}
-                  totalPages={totalPages}
+                  totalPages={pageCount}
                 />
               </div>
             )}
@@ -120,7 +105,17 @@ export const QuizManagementContainer = () => {
           setSelectedItem(null);
           setModalCreate(open);
         }}
-        successCallback={fetchData}
+        successCallback={refetch}
+        selectedItem={selectedItem}
+      />
+
+      <QuizManagementModalDetele
+        open={modalDelete}
+        setOpen={(open: boolean) => {
+          setModalDelete(open);
+        }}
+        successCallback={refetch}
+        selectedItem={selectedItem}
       />
     </div>
   );

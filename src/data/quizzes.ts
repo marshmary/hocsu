@@ -1,5 +1,16 @@
-import { addDoc, collection, getDocs, query } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  documentId,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import normalizeText from "normalize-text";
+import { toast } from "react-toastify";
 import { db } from "~/utils/firebase/firebase-config";
 
 const collectionName = "quizzes";
@@ -17,6 +28,17 @@ export const createQuiz = async (quiz: QuizForm) => {
   return res;
 };
 
+export const deleteQuiz = async (id: string) => {
+  const docRef = doc(db, collectionName, id);
+  const snapshot = await getDoc(docRef);
+  if (!snapshot.exists()) {
+    toast.warning("Quiz not found!");
+    return;
+  }
+
+  await deleteDoc(docRef);
+};
+
 export const getQuizzes = async (filter: QuizFilter) => {
   let q = query(collectionRef);
 
@@ -29,7 +51,7 @@ export const getQuizzes = async (filter: QuizFilter) => {
   let data = snapshot.docs.map((doc) => ({
     ...doc.data(),
     id: doc.id,
-  })) as unknown as QuizForm[];
+  })) as unknown as Quiz[];
 
   if (filter.searchKey) {
     data = data.filter((item) =>
@@ -40,6 +62,24 @@ export const getQuizzes = async (filter: QuizFilter) => {
 
     pageCount = Math.ceil(data.length / filter.limit);
   }
+
+  // const eventIds = Array.from(
+  //   new Set(data.map((quiz) => quiz.event).filter(Boolean))
+  // );
+  // const eventsSnapshot = await getDocs(
+  //   query(collection(db, "events"), where(documentId(), "in", eventIds))
+  // );
+  // const eventsMap = eventsSnapshot.docs.reduce((acc, eventDoc) => {
+  //   acc[eventDoc.id] = {
+  //     ...(eventDoc.data() as HistoryEvent),
+  //   };
+  //   return acc;
+  // }, {} as Record<string, HistoryEvent>);
+
+  // data = data.map((quiz) => ({
+  //   ...quiz,
+  //   eventObj: quiz.event ? eventsMap[quiz.event] || null : null,
+  // }));
 
   data = data.slice(
     (filter.page - 1) * filter.limit,

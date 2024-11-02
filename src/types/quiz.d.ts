@@ -10,6 +10,12 @@ interface QuizForm {
   answers: Answer[];
 }
 
+interface Quiz extends QuizForm {
+  id: string;
+  eventObj: HistoryEvent | null;
+  eventTitle?: string;
+}
+
 interface QuizFilter {
   page: number;
   limit: number;
@@ -18,5 +24,5 @@ interface QuizFilter {
 
 interface QuizFilterResult {
   pageCount: number;
-  data: QuizForm[];
+  data: Quiz[];
 }

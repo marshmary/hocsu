@@ -3,6 +3,7 @@ import { Accept, useDropzone } from "react-dropzone";
 import { FieldError, FieldErrorsImpl, Merge } from "react-hook-form";
 import Icon from "../Icon";
 import uuid from "react-uuid";
+import { TextInput } from "flowbite-react";
 
 interface ImageDropzoneProps {
     accept?: Accept;
@@ -105,6 +106,15 @@ const ImageDropzone: FunctionComponent<ImageDropzoneProps> = ({
         }
     };
 
+    const handleEditImageSource = (key: string, event: any) => {
+        console.log(event.target.value);
+        setPreviews((prevItems) =>
+            prevItems.map((item) =>
+              item.key === key ? { ...item, source: event.target.value } : item
+            )
+        );
+    }
+
     return (
         <section
             className={`flex flex-col gap-3 items-center justify-center w-full h-fit ${className}`}
@@ -146,7 +156,7 @@ const ImageDropzone: FunctionComponent<ImageDropzoneProps> = ({
                 <div className="w-full flex gap-5 mt-3 flex-row flex-wrap justify-evenly">
                     {previews.map((img) => (
                         <div
-                            className="inline-block relative h-32 w-32 rounded-md ring-2 ring-white"
+                            className="inline-block relative h-32 w-full rounded-md ring-2 ring-white flex gap-5 flex-row"
                             key={img.key}
                         >
                             <div
@@ -162,10 +172,18 @@ const ImageDropzone: FunctionComponent<ImageDropzoneProps> = ({
                                 />
                             </div>
                             <img
-                                className="w-full h-full object-cover"
+                                className="w-32 h-full object-cover"
                                 src={img.url}
                                 alt=""
                             />
+                            <div className="w-full flex items-center">
+                                <TextInput
+                                    type="text"
+                                    placeholder="Enter source"
+                                    value={img.source}
+                                    onChange={(event) => handleEditImageSource(img.key, event)}
+                                />
+                            </div>
                         </div>
                     ))}
                 </div>

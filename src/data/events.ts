@@ -101,15 +101,16 @@ export const createEvent = async (historyEvent: HistoryEventCreateForm) => {
   var imageUrls: Image[] = [];
   if (historyEvent.images) {
     for (const image of historyEvent.images) {
-      const key = `${uuid()}.${image.name.substring(
-        image.name.lastIndexOf(".") + 1,
-        image.name.length
+      const key = `${uuid()}.${image.rawImage.name.substring(
+        image.rawImage.name.lastIndexOf(".") + 1,
+        image.rawImage.name.length
       )}`;
-      const uploadUrl = await uploadStorageObject(image, key);
+      const uploadUrl = await uploadStorageObject(image.rawImage, key);
       if (uploadUrl) {
         imageUrls.push({
           url: uploadUrl,
           key: key,
+          source: image.source,
         });
       }
     }

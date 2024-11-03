@@ -60,6 +60,24 @@ export const deleteQuiz = async (id: string) => {
   await deleteDoc(docRef);
 };
 
+export const deleteQuizzedByEventId = async (eventId: string) => {
+  try {
+    let q = query(collectionRef);
+    q = query(q, where("event", "==", eventId));
+
+    const snapshot = await getDocs(q);
+    if (snapshot.empty) {
+      return;
+    }
+
+    const deletePromises = snapshot.docs.map(async (quiz) => {
+      const docRef = doc(db, collectionName, quiz.id);
+      await deleteDoc(docRef);
+    });
+    await Promise.all(deletePromises);
+  } catch {}
+};
+
 export const getQuizzes = async (filter: QuizFilter) => {
   let q = query(collectionRef);
 
@@ -88,28 +106,28 @@ export const getQuizzes = async (filter: QuizFilter) => {
     pageCount = Math.ceil(data.length / filter.limit);
   }
 
-  // const eventIds = Array.from(
-  //   new Set(data.map((quiz) => quiz.event).filter(Boolean))
-  // );
-  // const eventsSnapshot = await getDocs(
-  //   query(collection(db, "events"), where(documentId(), "in", eventIds))
-  // );
-  // const eventsMap = eventsSnapshot.docs.reduce((acc, eventDoc) => {
-  //   acc[eventDoc.id] = {
-  //     ...(eventDoc.data() as HistoryEvent),
-  //   };
-  //   return acc;
-  // }, {} as Record<string, HistoryEvent>);
-
-  // data = data.map((quiz) => ({
-  //   ...quiz,
-  //   eventObj: quiz.event ? eventsMap[quiz.event] || null : null,
-  // }));
-
   data = data.slice(
     (filter.page - 1) * filter.limit,
     (filter.page - 1) * filter.limit + filter.limit
   );
+
+  const eventIds = Array.from(
+    new Set(data.map((quiz) => quiz.event).filter(Boolean))
+  );
+  const eventsSnapshot = await getDocs(
+    query(collection(db, "events"), where(documentId(), "in", eventIds))
+  );
+  const eventsMap = eventsSnapshot.docs.reduce((acc, eventDoc) => {
+    acc[eventDoc.id] = {
+      ...(eventDoc.data() as HistoryEvent),
+    };
+    return acc;
+  }, {} as Record<string, HistoryEvent>);
+
+  data = data.map((quiz) => ({
+    ...quiz,
+    eventObj: quiz.event ? eventsMap[quiz.event] || null : null,
+  }));
 
   return {
     pageCount,

@@ -24,7 +24,7 @@ export const QuizManagementContainer = () => {
     () =>
       (data?.data || []).map((each) => ({
         id: each.id,
-        event: each.event,
+        event: each.eventObj?.title,
         question: each.question,
         actions: (
           <div className="flex gap-3">

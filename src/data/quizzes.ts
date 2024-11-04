@@ -78,6 +78,23 @@ export const deleteQuizzedByEventId = async (eventId: string) => {
   } catch {}
 };
 
+export const getQuizzesByEventId = async (eventId: string) => {
+  let q = query(collectionRef);
+  q = query(q, where("event", "==", eventId));
+
+  const snapshot = await getDocs(q);
+  if (snapshot.empty) {
+    return emptyFilterResult;
+  }
+
+  let data = snapshot.docs.map((doc) => ({
+    ...doc.data(),
+    id: doc.id,
+  })) as unknown as Quiz[];
+
+  return data;
+};
+
 export const getQuizzes = async (filter: QuizFilter) => {
   let q = query(collectionRef);
 

@@ -68,7 +68,13 @@ const ImageDropzone: FunctionComponent<ImageDropzoneProps> = ({
             });
 
             const savedImages = getValues(fieldName);
-            setValue(fieldName, [...savedImages, ...newFiles]);
+            // setValue(fieldName, [...savedImages, ...newFiles]);
+
+            // New format for upload image with image's source
+            const newFormatFiles = newFiles.map((item) => {
+                return { rawImage: item, source: '' };
+            })
+            setValue(fieldName, [...savedImages, ...newFormatFiles]);
         },
     });
 
@@ -107,12 +113,24 @@ const ImageDropzone: FunctionComponent<ImageDropzoneProps> = ({
     };
 
     const handleEditImageSource = (key: string, event: any) => {
-        console.log(event.target.value);
         setPreviews((prevItems) =>
             prevItems.map((item) =>
-              item.key === key ? { ...item, source: event.target.value } : item
+                item.key === key ? { ...item, source: event.target.value } : item
             )
         );
+
+        const savedImages = getValues(fieldName);
+        if (
+            savedImages.filter((preview: RawImage) => preview.rawImage.key === key).length > 0
+        ) {
+            const updatedImages = savedImages.map((item: RawImage) => item.rawImage.key === key ? { ...item, source: event.target.value } : item );
+            setValue(fieldName, updatedImages);
+        } else {
+            const savedPreviews = getValues(previewFieldName);
+            const updatedImages = savedPreviews.map((item: Image) => item.key === key ? { ...item, source: event.target.value } : item );
+            setValue(previewFieldName, updatedImages);
+        }
+        
     }
 
     return (
@@ -180,6 +198,7 @@ const ImageDropzone: FunctionComponent<ImageDropzoneProps> = ({
                                 <TextInput
                                     type="text"
                                     placeholder="Enter source"
+                                    key={img.key}
                                     value={img.source}
                                     onChange={(event) => handleEditImageSource(img.key, event)}
                                 />

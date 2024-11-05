@@ -105,6 +105,7 @@ export const createEvent = async (historyEvent: HistoryEventCreateForm) => {
         image.rawImage.name.lastIndexOf(".") + 1,
         image.rawImage.name.length
       )}`;
+
       const uploadUrl = await uploadStorageObject(image.rawImage, key);
       if (uploadUrl) {
         imageUrls.push({
@@ -134,6 +135,7 @@ export const createEvent = async (historyEvent: HistoryEventCreateForm) => {
   const res = await addDoc(collectionRef, historyEventUpload);
 
   return res;
+  // return;
 };
 
 export const deleteEvent = async (id: string) => {
@@ -250,9 +252,13 @@ const uploadStorageObject: (
   image: File,
   name: string
 ) => Promise<string | null> = async (image: File, name: string) => {
+  console.log("DEBUG: create ref...");
   const imgRef = ref(storage, name);
   try {
+    console.log("DEBUG: uploading image bytes...");
     const snapshot = await uploadBytes(imgRef, image);
+
+    console.log("DEBUG: getting download url...");
     const uploadUrl = await getDownloadURL(snapshot.ref);
     return uploadUrl;
   } catch {

@@ -5,12 +5,12 @@ import { SWIPE_LENGTH } from "~/utils/constants";
 import { useOutsideClick } from "~/utils/use-outside-click";
 import { useHorizontalSwipe } from "~/utils/use-swipe";
 
+import { useDisclosure } from "@mantine/hooks";
 import Timeline from "../Timeline/Timeline";
 import TimeLineSearch from "../Timeline/Timeline.Search";
 import HomeLeftContent from "./Home.LeftContent";
-import HomeRightContent from "./Home.RightContent";
-import { useDisclosure } from "@mantine/hooks";
 import { HomeQuizToggle } from "./Home.QuizToggle";
+import HomeRightContent from "./Home.RightContent";
 
 const HomeLayout = () => {
   // Control render logic

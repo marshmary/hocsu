@@ -84,7 +84,7 @@ export const getQuizzesByEventId = async (eventId: string) => {
 
   const snapshot = await getDocs(q);
   if (snapshot.empty) {
-    return emptyFilterResult;
+    return [];
   }
 
   let data = snapshot.docs.map((doc) => ({
@@ -100,7 +100,7 @@ export const getQuizzesByEventIds = async (eventIds: string[]) => {
 
   const snapshot = await getDocs(q);
   if (snapshot.empty) {
-    return emptyFilterResult;
+    return [];
   }
 
   let data = snapshot.docs.map((doc) => ({

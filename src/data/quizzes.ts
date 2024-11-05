@@ -95,6 +95,22 @@ export const getQuizzesByEventId = async (eventId: string) => {
   return data;
 };
 
+export const getQuizzesByEventIds = async (eventIds: string[]) => {
+  let q = query(collectionRef, where("event", "in", eventIds));
+
+  const snapshot = await getDocs(q);
+  if (snapshot.empty) {
+    return emptyFilterResult;
+  }
+
+  let data = snapshot.docs.map((doc) => ({
+    ...doc.data(),
+    id: doc.id,
+  })) as unknown as Quiz[];
+
+  return data;
+};
+
 export const getQuizzes = async (filter: QuizFilter) => {
   let q = query(collectionRef);
 

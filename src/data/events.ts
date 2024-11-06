@@ -190,15 +190,17 @@ export const updateEvent = async (historyEvent: HistoryEventEditForm) => {
   var imageUrls: Image[] = [];
   if (historyEvent.imageFiles) {
     for (const image of historyEvent.imageFiles) {
-      const key = `${uuid()}.${image.name.substring(
-        image.name.lastIndexOf(".") + 1,
-        image.name.length
+      const key = `${uuid()}.${image.rawImage.name.substring(
+        image.rawImage.name.lastIndexOf(".") + 1,
+        image.rawImage.name.length
       )}`;
-      const uploadUrl = await uploadStorageObject(image, key);
+
+      const uploadUrl = await uploadStorageObject(image.rawImage, key);
       if (uploadUrl) {
         imageUrls.push({
           url: uploadUrl,
           key: key,
+          source: image.source,
         });
       }
     }
@@ -252,13 +254,9 @@ const uploadStorageObject: (
   image: File,
   name: string
 ) => Promise<string | null> = async (image: File, name: string) => {
-  console.log("DEBUG: create ref...");
   const imgRef = ref(storage, name);
   try {
-    console.log("DEBUG: uploading image bytes...");
     const snapshot = await uploadBytes(imgRef, image);
-
-    console.log("DEBUG: getting download url...");
     const uploadUrl = await getDownloadURL(snapshot.ref);
     return uploadUrl;
   } catch {

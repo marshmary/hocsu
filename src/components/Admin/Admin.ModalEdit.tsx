@@ -46,7 +46,7 @@ const ModalEdit: FunctionComponent<ModalEditProps> = ({
             .required("Please enter value for To!")
             .dateFormat("Please enter value with valid date format"),
         content: yup.string().required("Please enter value for Content!"),
-        imageFiles: yup.mixed().nullable(true),
+        imageFiles: yup.array().nullable(true),
     });
 
     const {

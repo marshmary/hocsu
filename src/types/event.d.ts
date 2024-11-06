@@ -37,7 +37,7 @@ interface HistoryEventEditForm {
     to: string;
     content: string;
     images: Image[];
-    imageFiles: Files[];
+    imageFiles: RawImage[];
 }
 
 interface HistoryEventCreate {

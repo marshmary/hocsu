@@ -57,7 +57,6 @@ export const getTimeline: (value: string) => Promise<TimeLine | null> = async (
 };
 
 export const createTimeline = async (value: string) => {
-    console.log("DEBUG: creating timeline...");
     const timelineUpload: TimelineCreate = {
         title: value,
     };

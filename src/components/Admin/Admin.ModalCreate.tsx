@@ -43,7 +43,7 @@ const ModalCreate: FunctionComponent<ModalCreateProps> = ({
             .dateFormat("Please enter value with valid date format"),
         // timeline: yup.string().required("Please select or create new timeline"),
         content: yup.string().required("Please enter value for Content!"),
-        imageFiles: yup.mixed().nullable(true),
+        imageFiles: yup.array().nullable(true),
     });
 
     const {

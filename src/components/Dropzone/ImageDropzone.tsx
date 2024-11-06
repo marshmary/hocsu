@@ -3,6 +3,7 @@ import { Accept, useDropzone } from "react-dropzone";
 import { FieldError, FieldErrorsImpl, Merge } from "react-hook-form";
 import Icon from "../Icon";
 import uuid from "react-uuid";
+import { TextInput } from "flowbite-react";
 
 interface ImageDropzoneProps {
     accept?: Accept;
@@ -67,7 +68,13 @@ const ImageDropzone: FunctionComponent<ImageDropzoneProps> = ({
             });
 
             const savedImages = getValues(fieldName);
-            setValue(fieldName, [...savedImages, ...newFiles]);
+            // setValue(fieldName, [...savedImages, ...newFiles]);
+
+            // New format for upload image with image's source
+            const newFormatFiles = newFiles.map((item) => {
+                return { rawImage: item, source: '' };
+            })
+            setValue(fieldName, [...savedImages, ...newFormatFiles]);
         },
     });
 
@@ -104,6 +111,27 @@ const ImageDropzone: FunctionComponent<ImageDropzoneProps> = ({
             setValue(previewFieldName, newImages);
         }
     };
+
+    const handleEditImageSource = (key: string, event: any) => {
+        setPreviews((prevItems) =>
+            prevItems.map((item) =>
+                item.key === key ? { ...item, source: event.target.value } : item
+            )
+        );
+
+        const savedImages = getValues(fieldName);
+        if (
+            savedImages.filter((preview: RawImage) => preview.rawImage.key === key).length > 0
+        ) {
+            const updatedImages = savedImages.map((item: RawImage) => item.rawImage.key === key ? { ...item, source: event.target.value } : item );
+            setValue(fieldName, updatedImages);
+        } else {
+            const savedPreviews = getValues(previewFieldName);
+            const updatedImages = savedPreviews.map((item: Image) => item.key === key ? { ...item, source: event.target.value } : item );
+            setValue(previewFieldName, updatedImages);
+        }
+        
+    }
 
     return (
         <section
@@ -146,7 +174,7 @@ const ImageDropzone: FunctionComponent<ImageDropzoneProps> = ({
                 <div className="w-full flex gap-5 mt-3 flex-row flex-wrap justify-evenly">
                     {previews.map((img) => (
                         <div
-                            className="inline-block relative h-32 w-32 rounded-md ring-2 ring-white"
+                            className="inline-block relative h-32 w-full rounded-md ring-2 ring-white flex gap-5 flex-row"
                             key={img.key}
                         >
                             <div
@@ -162,10 +190,19 @@ const ImageDropzone: FunctionComponent<ImageDropzoneProps> = ({
                                 />
                             </div>
                             <img
-                                className="w-full h-full object-cover"
+                                className="w-32 h-full object-cover"
                                 src={img.url}
                                 alt=""
                             />
+                            <div className="w-full flex items-center">
+                                <TextInput
+                                    type="text"
+                                    placeholder="Enter source"
+                                    key={img.key}
+                                    value={img.source}
+                                    onChange={(event) => handleEditImageSource(img.key, event)}
+                                />
+                            </div>
                         </div>
                     ))}
                 </div>

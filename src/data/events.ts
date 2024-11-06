@@ -24,6 +24,7 @@ import { toast } from "react-toastify";
 import uuid from "react-uuid";
 import { db, storage } from "~/utils/firebase/firebase-config";
 import { createTimeline, deleteTimeline, getTimeline } from "./timelines";
+import { deleteQuizzedByEventId } from "./quizzes";
 
 // Get collection
 const collectionName = "events";
@@ -34,7 +35,17 @@ const emptyFilterResult: AdminFilterResult = {
   events: [],
 };
 
+const cache: {
+  events: null | HistoryEvent[];
+} = {
+  events: null,
+};
+
 export const listAllHistoryEvents = async () => {
+  if (cache.events) {
+    return cache.events;
+  }
+
   var q = query(collectionRef, orderBy("from", "desc"), limit(10000));
 
   const snapshot = await getDocs(q);
@@ -46,6 +57,7 @@ export const listAllHistoryEvents = async () => {
     id: doc.id,
   })) as HistoryEvent[];
 
+  cache.events = events;
   return events;
 };
 
@@ -133,7 +145,7 @@ export const createEvent = async (historyEvent: HistoryEventCreateForm) => {
 
   // New document
   const res = await addDoc(collectionRef, historyEventUpload);
-
+  cache.events = null;
   return res;
   // return;
 };
@@ -160,6 +172,9 @@ export const deleteEvent = async (id: string) => {
     await deleteTimeline(event.timeline);
   }
 
+  await deleteQuizzedByEventId(id);
+
+  cache.events = null;
   await deleteDoc(docRef);
 };
 
@@ -248,6 +263,8 @@ export const updateEvent = async (historyEvent: HistoryEventEditForm) => {
     timeline: timeline,
     title: historyEvent.title,
   });
+
+  cache.events = null;
 };
 
 const uploadStorageObject: (

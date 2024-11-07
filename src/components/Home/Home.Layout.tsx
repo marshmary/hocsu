@@ -19,6 +19,7 @@ const HomeLayout = () => {
     swipeProps,
     timelineRef,
     searchFabRef,
+    quizToggleRef,
     isQuizShowing,
     toggleQuiz,
   } = useHomeRenderLogic();
@@ -45,7 +46,12 @@ const HomeLayout = () => {
           isTimelineShowing={isTimelineShowing}
           searchFabRef={searchFabRef}
         />
-        <HomeQuizToggle isQuizShowing={isQuizShowing} toggleQuiz={toggleQuiz} />
+        <HomeQuizToggle
+          isTimelineShowing={isTimelineShowing}
+          quizToggleRef={quizToggleRef}
+          isQuizShowing={isQuizShowing}
+          toggleQuiz={toggleQuiz}
+        />
         <HomeLeftContent className="order-2 lg:order-1" events={events} />
         <HomeRightContent
           className="order-1 lg:order-2"
@@ -66,6 +72,7 @@ function useHomeRenderLogic() {
 
   const timelineRef = useRef(null);
   const searchFabRef = useRef(null);
+  const quizToggleRef = useRef(null);
 
   // Handle swipe
   const swipeProps = useHorizontalSwipe({
@@ -75,13 +82,14 @@ function useHomeRenderLogic() {
   });
 
   // Handle outside click
-  useOutsideClick([timelineRef, searchFabRef], () => setTimelineShowing(false));
+  useOutsideClick([timelineRef, searchFabRef, quizToggleRef], () => setTimelineShowing(false));
 
   return {
     isTimelineShowing,
     swipeProps,
     timelineRef,
     searchFabRef,
+    quizToggleRef,
     isQuizShowing,
     toggleQuiz,
   };

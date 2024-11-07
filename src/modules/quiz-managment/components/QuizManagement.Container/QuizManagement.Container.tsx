@@ -84,7 +84,7 @@ export const QuizManagementContainer = () => {
         ) : rowsData && rowsData.length === 0 ? (
           <div className="w-full grid place-items-center">No item found</div>
         ) : (
-          <>
+          <div className="overflow-x-auto">
             <Table heads={heads} rows={rowsData} hasRowOptions={false} />
             {rowsData && pageCount > 1 && (
               <div className="mt-2 w-full grid place-items-start">
@@ -96,7 +96,7 @@ export const QuizManagementContainer = () => {
                 />
               </div>
             )}
-          </>
+          </div>
         )}
       </div>
 

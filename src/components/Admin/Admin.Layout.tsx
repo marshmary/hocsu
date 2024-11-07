@@ -106,7 +106,7 @@ const AdminLayout = () => {
                         No item found
                     </div>
                 ) : (
-                    <>
+                    <div className="overflow-x-auto">
                         <Table
                             heads={heads}
                             rows={rowsData}
@@ -122,7 +122,7 @@ const AdminLayout = () => {
                                 />
                             </div>
                         )}
-                    </>
+                    </div>
                 )}
             </div>
 

@@ -55,7 +55,7 @@ const ImageDropzone: FunctionComponent<ImageDropzoneProps> = ({
         }
     }, [resetTrigger]);
 
-    const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+    const { acceptedFiles, fileRejections, getRootProps, getInputProps } = useDropzone({
         accept: accept,
         maxFiles: maxFile,
         maxSize: maxSize,
@@ -131,14 +131,14 @@ const ImageDropzone: FunctionComponent<ImageDropzoneProps> = ({
         if (
             savedImages.filter((preview: RawImage) => preview.rawImage.key === key).length > 0
         ) {
-            const updatedImages = savedImages.map((item: RawImage) => item.rawImage.key === key ? { ...item, source: event.target.value } : item );
+            const updatedImages = savedImages.map((item: RawImage) => item.rawImage.key === key ? { ...item, source: event.target.value } : item);
             setValue(fieldName, updatedImages);
         } else {
             const savedPreviews = getValues(previewFieldName);
-            const updatedImages = savedPreviews.map((item: Image) => item.key === key ? { ...item, source: event.target.value } : item );
+            const updatedImages = savedPreviews.map((item: Image) => item.key === key ? { ...item, source: event.target.value } : item);
             setValue(previewFieldName, updatedImages);
         }
-        
+
     }
 
     return (
@@ -216,9 +216,25 @@ const ImageDropzone: FunctionComponent<ImageDropzoneProps> = ({
                 </div>
             )}
 
-            {/* Error msg */}
-            {error?.message && acceptedFiles.length == 0 && (
+            {/* Error msg from yup validate */}
+            {error?.message && (
                 <span className="text-red-600 text-sm">{`${error.message}`}</span>
+            )}
+
+            {/* Error msg from dropzone validate */}
+            {fileRejections && (
+                <ul className="text-red-600 text-sm w-full">
+                    {fileRejections.map(({ file, errors }) => (
+                        <li key={file.path}>
+                            {file.path} - {file.size} bytes
+                            <ul className="list-disc list-inside">
+                                {errors.map(e => (
+                                    <li key={e.code}>{e.message}</li>
+                                ))}
+                            </ul>
+                        </li>
+                    ))}
+                </ul>
             )}
         </section>
     );

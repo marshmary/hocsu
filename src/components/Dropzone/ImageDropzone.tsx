@@ -15,6 +15,7 @@ interface ImageDropzoneProps {
     getValues: any; // useForm object
     setValue: any; // useForm object
     error?: any;
+    resetTrigger?: any;
 }
 
 interface ImagePreview {
@@ -37,6 +38,7 @@ const ImageDropzone: FunctionComponent<ImageDropzoneProps> = ({
     getValues,
     setValue,
     error,
+    resetTrigger,
 }) => {
     const [previews, setPreviews] = useState<Image[]>([]);
 
@@ -46,6 +48,12 @@ const ImageDropzone: FunctionComponent<ImageDropzoneProps> = ({
             setPreviews(savedPreviews);
         }
     }, []);
+
+    useEffect(() => {
+        if (resetTrigger === true) {
+            setPreviews([]);
+        }
+    }, [resetTrigger]);
 
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
         accept: accept,

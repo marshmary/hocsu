@@ -60,7 +60,7 @@ const ModalCreate: FunctionComponent<ModalCreateProps> = ({
         defaultValues: defaultValues,
     });
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false); // also work as a trigger for clearing ImageDropZone preview state
 
     const onSubmit = async (values: FieldValues) => {
         try {
@@ -80,6 +80,7 @@ const ModalCreate: FunctionComponent<ModalCreateProps> = ({
             toast.info("Create new event successfully!");
         } catch {
             setLoading(false);
+            setOpen(false);
             toast.warning(
                 "Fail to create event. Please check your input again!"
             );
@@ -192,6 +193,7 @@ const ModalCreate: FunctionComponent<ModalCreateProps> = ({
                         getValues={getValues}
                         setValue={setValue}
                         error={errors.imageFiles}
+                        resetTrigger={loading}
                     />
                 </div>
                 <div className="w-full flex justify-end">

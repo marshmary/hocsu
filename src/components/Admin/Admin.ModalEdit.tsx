@@ -33,7 +33,7 @@ const ModalEdit: FunctionComponent<ModalEditProps> = ({
     successCallback,
     selected,
 }) => {
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true); // also work as a trigger for clearing ImageDropZone preview state
 
     const schema = yup.object().shape({
         title: yup.string().required("Please enter value for Title!"),
@@ -47,6 +47,7 @@ const ModalEdit: FunctionComponent<ModalEditProps> = ({
             .dateFormat("Please enter value with valid date format"),
         content: yup.string().required("Please enter value for Content!"),
         imageFiles: yup.array().nullable(true),
+        images: yup.array().nullable(true),
     });
 
     const {
@@ -103,6 +104,8 @@ const ModalEdit: FunctionComponent<ModalEditProps> = ({
             setLoading(false);
             setOpen(false);
         }
+
+        reset(defaultValues);
     };
 
     const handleDecline = () => {
@@ -191,6 +194,7 @@ const ModalEdit: FunctionComponent<ModalEditProps> = ({
                         fieldName="imageFiles"
                         previewFieldName="images"
                         error={errors.imageFiles}
+                        resetTrigger={loading}
                     />
                 </div>
                 <div className="w-full flex justify-end">

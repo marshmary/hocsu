@@ -72,29 +72,55 @@ export const QuizManagementModalUpsert: React.FC<Props> = ({
   );
 };
 
+// const schema = yup.object().shape({
+//   event: yup.string().required("Please select an Event!"),
+//   question: yup.string().required("Please enter value for Question!"),
+//   answers: yup
+//     .array()
+//     .test(
+//       "answer-value-not-null",
+//       "Please enter value for answer!",
+//       (answers) => {
+//         if (!answers) return false;
+//         // return !answers.find((each) => !each?.answer); // old logic
+//         return answers.every(obj => obj['answer'] !== null && obj['answer'] !== undefined && obj['answer'] !== '');
+//       }
+//     )
+//     .test(
+//       "at-least-one-correct-answer",
+//       "Please mark at least 1 answer as correct answer!",
+//       (answers) => {
+//         if (!answers) return false;
+//         const correctAnswer = answers.find((each) => each?.isCorrect);
+//         if (!correctAnswer) {
+//           return false;
+//         }
+//         return true;
+//       }
+//     ),
+// });
+
 const schema = yup.object().shape({
   event: yup.string().required("Please select an Event!"),
-  question: yup.string().required("Please enter value for Question!"),
+  question: yup.string().required("Please enter a value for Question!"),
   answers: yup
     .array()
-    .test(
-      "answer-value-not-null",
-      "Please enter value for answer!",
-      (answers) => {
-        if (!answers) return false;
-        return !answers.find((each) => !each?.answer);
-      }
+    .of(
+      yup.object().shape({
+        answer: yup
+          .string()
+          .required("Answer cannot be empty")
+          .test("not-empty", "Please enter a value for answer!", (value) => value !== ''),
+        isCorrect: yup.boolean().required()
+      })
     )
+    .min(1, "Answers array must contain at least one answer")
     .test(
       "at-least-one-correct-answer",
-      "Please mark at least 1 answer as correct answer!",
+      "Please mark at least one answer as correct!",
       (answers) => {
         if (!answers) return false;
-        const correctAnswer = answers.find((each) => each?.isCorrect);
-        if (!correctAnswer) {
-          return false;
-        }
-        return true;
+        return answers.some((each) => each?.isCorrect === true);
       }
-    ),
+    )
 });

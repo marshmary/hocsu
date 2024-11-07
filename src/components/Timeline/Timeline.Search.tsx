@@ -40,11 +40,22 @@ const TimeLineSearch: React.FC<TimeLineSearchProps> = ({
         `Cannot find any event(s) in ${searchInputRef.current.value}`
       );
     }
+
+    // Clear content after 'search'
+    searchInputRef.current.value = '';
+
+    // Temporarily disable then re-enable the inputs to remove the cursor pointer
+    searchInputRef.current.disabled = true;
+    setTimeout(() => {
+      if (searchInputRef.current) {
+        searchInputRef.current.disabled = false;
+      }
+    }, 50);
   };
 
   return (
     <form
-      className={`search-box shadow-lg ${isTimelineShowing ? "show" : ""}`}
+      className={`search-box drop-shadow-md ${isTimelineShowing ? "show" : ""}`}
       onSubmit={handleSearchTimeline}
       ref={searchFabRef}
     >

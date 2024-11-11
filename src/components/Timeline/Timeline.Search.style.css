@@ -1,78 +1,78 @@
 /* form */
 .search-box {
-    position: fixed;
-    bottom: 30px;
-    background: #cd595a;
-    height: 50px;
-    border-radius: 50px;
-    padding: 5px;
-    z-index: 10;
+  position: fixed;
+  bottom: 30px;
+  background: #cd595a;
+  height: 50px;
+  border-radius: 50px;
+  padding: 5px;
+  z-index: 10;
 }
 /* input */
 .search-input {
-    outline: none !important;
-    border: none !important;
-    background-color: transparent !important;
-    width: 0;
-    padding: 0 !important   ;
-    color: #fff;
-    float: left;
-    font-size: 16px;
-    transition: 0.3s;
-    line-height: 40px;
-    margin-top: 8px;
+  outline: none !important;
+  border: none !important;
+  background-color: transparent !important;
+  width: 0;
+  padding: 0 !important   ;
+  color: #fff;
+  float: left;
+  font-size: 16px;
+  transition: 0.3s;
+  line-height: 25px;
+  margin-top: 8px;
 }
 .search-input::placeholder {
-    color: #dbc5b0;
+  color: #dbc5b0;
 }
 /* button */
 .search-btn {
-    color: #fff;
-    float: right;
-    width: 40px;
-    height: 40px;
-    border-radius: 50px;
-    background: #cd595a;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-decoration: none;
-    transition: 0.3s;
+  color: #fff;
+  float: right;
+  width: 40px;
+  height: 40px;
+  border-radius: 50px;
+  background: #cd595a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  transition: 0.3s;
 }
 .search-input:focus,
 .search-input:not(:placeholder-shown) {
-    width: 69px;
-    margin-left: 9px;
-    outline: none !important;
-    border: none !important;
-    --tw-ring-color: transparent !important;
+  width: 69px;
+  margin-left: 9px;
+  outline: none !important;
+  border: none !important;
+  --tw-ring-color: transparent !important;
 }
 .search-box:hover > .search-input {
-    width: 69px;
-    margin-left: 9px;
-    outline: none !important;
-    border: none !important;
-    --tw-ring-color: transparent !important;
+  width: 69px;
+  margin-left: 9px;
+  outline: none !important;
+  border: none !important;
+  --tw-ring-color: transparent !important;
 }
 .search-box:hover > .search-btn,
 .search-input:focus + .search-btn,
 .search-input:not(:placeholder-shown) + .search-btn {
-    background: #fff;
-    color: #cd595a;
+  background: #fff;
+  color: #cd595a;
 }
 
 .search-box {
-    right: -133px;
+  right: -133px;
 
-    transition: 0.9s;
+  transition: 0.9s;
 }
 
 .search-box.show {
-    right: 30px;
+  right: 30px;
 }
 
 @media screen and (min-width: 1024px) {
-    .search-box {
-        right: 30px;
-    }
+  .search-box {
+    right: 30px;
+  }
 }

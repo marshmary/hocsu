@@ -6,7 +6,7 @@ interface EventItemProps {
 
 const EventItem: React.FC<EventItemProps> = ({ item }) => {
     return (
-        <PageLoadAnimation>
+        <PageLoadAnimation className="w-full">
             <div className="p-4 flex flex-col w-full">
                 {/* Header */}
                 <div className="py-1">

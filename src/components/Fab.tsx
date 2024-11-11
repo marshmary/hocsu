@@ -26,7 +26,7 @@ const Fab: FunctionComponent<FabProps> = () => {
         },
         {
             label: "How to use",
-            icon: "lightbulb",
+            icon: "book",
             onClick: () => {
                 navigate("/guide");
             },
@@ -55,7 +55,7 @@ const Fab: FunctionComponent<FabProps> = () => {
 
     return (
         <ul
-            className={`fixed right-5 bottom-5 w-14 flex flex-col-reverse items-center gap-4 ${
+            className={`fixed right-[30px] bottom-[30px] w-14 flex flex-col-reverse items-center gap-4 ${
                 !open ? "max-h-56" : "max-h-max"
             }`}
         >
@@ -65,10 +65,10 @@ const Fab: FunctionComponent<FabProps> = () => {
                 }}
             >
                 <li
-                    className="w-14 h-14 rounded-full drop-shadow-2xl cursor-pointer grid place-items-center bg-purple-500 hover:bg-purple-700 transition ease-in duration-200"
+                    className="w-[50px] h-[50px] rounded-full drop-shadow-md cursor-pointer grid place-items-center bg-[#cd595a] hover:bg-[#C33A3D] transition ease-in duration-200"
                     onClick={handleClick}
                 >
-                    <Icon icon="plus" size="xl" className="text-white" />
+                    <Icon icon="lightbulb" size="xl" className="text-white" />
                 </li>
             </motion.div>
             {actions.reverse().map((action) => (
@@ -83,7 +83,7 @@ const Fab: FunctionComponent<FabProps> = () => {
                         }}
                     >
                         <li
-                            className={`w-10 h-10 rounded-full grid place-items-center bg-purple-500 drop-shadow-2xl cursor-pointer transition ease-in-out duration-1000 delay-75 ${
+                            className={`w-10 h-10 rounded-full grid place-items-center bg-[#cd595a] hover:bg-[#C33A3D] drop-shadow-md cursor-pointer transition ease-in-out duration-1000 delay-75 ${
                                 !open ? "scale-0 hidden" : "scale-1 block"
                             }`}
                             onClick={action.onClick}

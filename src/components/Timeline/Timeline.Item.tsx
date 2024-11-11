@@ -28,7 +28,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
                     }}
                     className={
                         isActive
-                            ? "text-sm text-black-900 pt-[8.5px] pl-1"
+                            ? "text-sm text-black-900 pt-[8.5px] pl-1 font-medium"
                             : "text-sm text-gray-500 pt-[8.5px] pl-1"
                     }
                 >

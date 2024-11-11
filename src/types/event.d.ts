@@ -26,7 +26,7 @@ interface HistoryEventCreateForm {
     to: string;
     content: string;
     // timeline: TimeLine;
-    images: File[];
+    images: RawImage[];
 }
 
 interface HistoryEventEditForm {
@@ -37,7 +37,7 @@ interface HistoryEventEditForm {
     to: string;
     content: string;
     images: Image[];
-    imageFiles: Files[];
+    imageFiles: RawImage[];
 }
 
 interface HistoryEventCreate {
@@ -53,4 +53,10 @@ interface HistoryEventCreate {
 interface Image {
     url: string;
     key: string;
+    source?: string;
+}
+
+interface RawImage {
+    rawImage: Files;
+    source?: string;
 }

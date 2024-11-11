@@ -1,0 +1,14 @@
+.toggle-btn {
+    right: -133px;
+    transition: 0.9s;
+}
+
+.toggle-btn.show {
+    right: 34px;
+}
+
+@media screen and (min-width: 1024px) {
+    .toggle-btn {
+        right: 34px;
+    }
+}

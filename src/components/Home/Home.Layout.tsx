@@ -81,8 +81,8 @@ function useHomeRenderLogic() {
     handleLeftSwipe: () => setTimelineShowing(false),
   });
 
-  // Handle outside click
-  useOutsideClick([timelineRef, searchFabRef, quizToggleRef], () => setTimelineShowing(false));
+  // Handle outside click - Disabled by customer request
+  // useOutsideClick([timelineRef, searchFabRef, quizToggleRef], () => setTimelineShowing(false));
 
   return {
     isTimelineShowing,
